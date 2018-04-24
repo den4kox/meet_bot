@@ -21,7 +21,6 @@ services:
       - ../../:/var/www/
     working_dir:
       /var/www/
-    tty: true
   db:
     image: mysql:5.7
     ports:
