@@ -18,7 +18,7 @@ services:
     links:
       - db  
     volumes:
-      - ./:/var/www/
+      - ../:/var/www/
     working_dir:
       /var/www/
   db:
