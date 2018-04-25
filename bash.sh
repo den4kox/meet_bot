@@ -1,6 +1,6 @@
 #/bin/bash
 
-rm -rf ./meetbot
+sudo rm -rf ./meetbot
 git clone https://github.com/den4kox/meet_bot.git ./meetbot
 cp env ./meetbot/.env
 cd ./meetbot
