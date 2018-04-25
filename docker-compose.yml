@@ -3,7 +3,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "80:80"
+      - "8000:80"
     links:
       - app    
     volumes:
@@ -20,7 +20,7 @@ services:
     volumes:
       - ../:/var/www/
     working_dir:
-      /var/www/
+      /var/www/meetbot
   db:
     image: mysql:5.7
     ports:
@@ -32,5 +32,15 @@ services:
       MYSQL_DATABASE: meet
       MYSQL_USER: user
       MYSQL_PASSWORD: user
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+     - PMA_ARBITRARY=1
+    restart: always
+    ports:
+     - 8080:80
+    volumes:
+     - data:/var/lib/mysql
 volumes:
     data:
