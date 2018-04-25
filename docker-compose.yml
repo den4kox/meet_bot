@@ -3,7 +3,8 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8000:80"
+      - "80:80"
+      - "433:433"
     links:
       - app    
     volumes:
