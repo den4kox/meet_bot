@@ -30,20 +30,46 @@ services:
       LETSENCRYPT_HOST: api.shoxel.com
       LETSENCRYPT_EMAIL: 'admin@example.com'
 
-  app2:
-    image: nginx
-    container_name: app2
+  app:
+    build: ./images/php-fpm
+    ports:
+      - "80:9000"
+    links:
+      - db
+    volumes:
+      - ../:/var/www/
+    working_dir:
+      /var/www/meetbot
     environment:
       VIRTUAL_HOST: shoxel.com
       LETSENCRYPT_HOST: shoxel.com
       LETSENCRYPT_EMAIL: 'admin@example.com'
 
-  php-fpm:
-    image: php-fpm
-    container_name: php-fpm
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: meet
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+     - PMA_ARBITRARY=1
+    restart: always
+    ports:
+     - 8080:80
+    volumes:
+     - mysql-data:/var/lib/mysql
 
 volumes:
   nginx-vhosts:
   nginx-config:
   nginx-certs:
   nginx-webroot:
+  mysql-data:
