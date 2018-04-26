@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
   nginx-proxy:
     image: jwilder/nginx-proxy
@@ -6,17 +6,17 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - nginx-proxy:"/etc/nginx/vhost.d"
-      - nginx-proxy:"/usr/share/nginx/html"
-      - nginx-proxy:"/var/run/docker.sock:/tmp/docker.sock:ro"
-      - nginx-proxy:"/etc/nginx/certs"
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/etc/nginx/certs"
 
   letsencrypt-nginx-proxy-companion:
     image: jrcs/letsencrypt-nginx-proxy-companion
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-     - nginx-proxy
-
+    volumes_from:
+      - "nginx-proxy"
   app:
     build: ./images/php-fpm
     ports:
@@ -53,5 +53,4 @@ services:
     volumes:
      - data:/var/lib/mysql
 volumes:
-  data:
-  nginx-proxy:
+    data:
