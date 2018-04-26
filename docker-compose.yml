@@ -23,8 +23,8 @@ services:
     image: nginx:latest
     hostname: shoxel.com
     ports:
-      - "80:80"
-      - "433:433"
+      - "8000:80"
+      - "4331:433"
     links:
       - app
     volumes:
