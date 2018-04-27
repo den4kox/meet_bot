@@ -17,13 +17,13 @@ class MainController extends Controller
 
         $client = new GuzzleHttp\Client();
         $res = $client
-            ->get('https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage', 
+            ->post('https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage', 
                 [
                     "chat_id" => "-1001395709569",
                     "text" => "Янка забиянка22"
                 ]
             );
-        return 'qwe'    
+        return 'qwe';
     }
 
     public function post(Request $request) {
@@ -31,12 +31,12 @@ class MainController extends Controller
 
         $client = new GuzzleHttp\Client();
         $res = $client
-            ->get('https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage', 
+            ->post('https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage', 
                 [
                     "chat_id" => "-1001395709569",
                     "text" => "Янка забиянка33"
                 ]
             );
-        return 'qwe'    
+        return 'qwe'; 
     }
 }
