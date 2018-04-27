@@ -13,5 +13,3 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', 'MainController@get');
-Route::post('/', 'MainCOntroller@post');
