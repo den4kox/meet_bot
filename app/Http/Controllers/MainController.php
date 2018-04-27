@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Guzzle\Http\Client;
 use Illuminate\Http\Request;
 // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/setWebhook
 class MainController extends Controller
@@ -15,7 +15,7 @@ class MainController extends Controller
     public function get(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
 
-        $client = new GuzzleHttp\Client();
+        $client = new Client();
         $res = $client
             ->post('https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage', 
                 [
@@ -29,7 +29,7 @@ class MainController extends Controller
     public function post(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
 
-        $client = new GuzzleHttp\Client();
+        $client = new Client();
         $res = $client
             ->post('https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage', 
                 [
