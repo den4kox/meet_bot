@@ -17,4 +17,7 @@ Route::get('/home', function () {
 
 
 Route::get('/', 'MainController@get');
-Route::post('/', 'MainCOntroller@post');
+Route::post('/', 'MainController@post');
+
+Route::get('/update', 'MainController@get');
+Route::post('/update', 'MainController@post');

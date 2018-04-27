@@ -32,7 +32,7 @@ class MainController extends Controller
     public function post(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
         $resp = $this->client->post('sendMessage', 
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка" ) ) 
+            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка2" ) ) 
         );
 
         return 'gooo';
