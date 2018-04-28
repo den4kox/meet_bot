@@ -22,8 +22,9 @@ class MainController extends Controller
 
     public function handler(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
-        $resp = $this->client->post('sendMessage', 
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка1" ) ) 
+        $all = $request->all();
+        $resp = $this->client->post('sendMessage',
+            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => $all ) )
         );
         $statusCode = $resp->getStatusCode();
         $body = $resp->getBody();
@@ -33,15 +34,15 @@ class MainController extends Controller
 
     public function post(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
-        $resp = $this->client->post('sendMessage', 
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка2" ) ) 
+        $resp = $this->client->post('sendMessage',
+            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка2" ) )
         );
 
         return 'gooo';
     }
     public function qwe(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
-        
+
         return 'Rgooo';
     }
 }
