@@ -160,6 +160,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // telegram
+        App\Providers\TelegramServicesProvider::class,
+        App\Providers\TelegramUtilsProvider::class,
+
     ],
 
     /*
@@ -208,6 +212,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        'TelegramService' => App\Services\Telegram::class,
+        'TelegramUtils' => App\Utils\Telegram::class,
 
     ],
 
