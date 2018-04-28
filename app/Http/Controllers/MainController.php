@@ -23,7 +23,7 @@ class MainController extends Controller
     public function get1(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
         $resp = $this->client->post('sendMessage', 
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка" ) ) 
+            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка1" ) ) 
         );
 
         return 'gooo';
@@ -31,7 +31,7 @@ class MainController extends Controller
     public function get2(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
         $resp = $this->client->post('sendMessage', 
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка" ) ) 
+            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка2" ) ) 
         );
 
         return 'gooo';
@@ -39,7 +39,7 @@ class MainController extends Controller
     public function get3(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
         $resp = $this->client->post('sendMessage', 
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка" ) ) 
+            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка3" ) ) 
         );
 
         return 'gooo';
