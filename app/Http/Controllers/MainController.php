@@ -39,9 +39,8 @@ class MainController extends Controller
             // return $res;
         }
 
-        $resp = $this->client->post('sendMessage',
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => $allJson ) )
-        );
+        $resp = $this->telegram->sendMessage('-1001395709569', $allJson);
+        
         // $statusCode = $resp->getStatusCode();
         // $body = $resp->getBody();
 
