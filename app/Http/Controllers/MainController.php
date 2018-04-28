@@ -6,19 +6,26 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use App\Services\TelegramService;
+use App\Utils\TelegramUtils;
+use App\General;
 // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/setWebhook
 class MainController extends Controller
 {
     public function __construct()
     {
-        $this->token = '528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ';
-        $this->url = 'https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/';
-
-        $apiKey = '528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ'; // Put your bot's API key here
-        $apiURL = 'https://api.telegram.org/bot' . $apiKey . '/';
-
-        $this->client = new Client( array( 'base_uri' => $apiURL ) );
+        $this->telegram = new TelegramService();
+        $this->utils = new TelegramUtils();
     }
+
+    public function setHook(Request $request) {
+        $res = $this->telegram->setHook($request->url);
+        return $res;
+    }
+
+    public function setGeneralTable(Request $request) {
+        return $this->utils->setGeneralTable($request->label, $request->value);
+    }
+
 
     public function handler(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
@@ -26,32 +33,18 @@ class MainController extends Controller
         
         $allJson = json_encode($params);
 
-        if(@$params['message']['left_chat_member']) {
-            $a = new TelegramService();
-            $lol = $a->test();
-            return 'Ok'.' '.$lol;
+        if(@$params['message']['left_chat_participant']) {
+            $res = $this->telegram->deleteUser($params['message']);
+            
+            // return $res;
         }
 
         $resp = $this->client->post('sendMessage',
             array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => $allJson ) )
         );
-        $statusCode = $resp->getStatusCode();
-        $body = $resp->getBody();
+        // $statusCode = $resp->getStatusCode();
+        // $body = $resp->getBody();
 
-        return response()->json(['status' => $statusCode, 'body' => $body]);
-    }
-
-    public function post(Request $request) {
-        // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
-        $resp = $this->client->post('sendMessage',
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка2" ) )
-        );
-
-        return 'gooo';
-    }
-    public function qwe(Request $request) {
-        // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
-
-        return 'Rgooo';
+        // return response()->json(['status' => $statusCode, 'body' => $body]);
     }
 }

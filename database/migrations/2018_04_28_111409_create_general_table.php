@@ -14,10 +14,9 @@ class CreateGeneralTable extends Migration
     public function up()
     {
         Schema::create('general', function (Blueprint $table) {
-            $table->string('label');
-            $table->unsignedInteger('value');
-
-            $table->primary('label');
+            $table->increments('id');
+            $table->string('label')->index('label')->unique();
+            $table->string('value');
         });
     }
 
