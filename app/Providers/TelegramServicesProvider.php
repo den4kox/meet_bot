@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use App\Services\TelegramService;
 class TelegramServicesProvider extends ServiceProvider
 {
     /**
@@ -23,9 +23,8 @@ class TelegramServicesProvider extends ServiceProvider
      */
     public function register()
     {
-        foreach (glob(app_path() . '/Services/*.php') as $helpersfilename)
-        {
-            require_once($helpersfilename);
-        }
+        $this->app->bind('App\Services\TelegramService', function ($app) {
+            return new TelegramService();
+        });
     }
 }

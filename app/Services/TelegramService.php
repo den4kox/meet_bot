@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Utils;
+namespace App\Service;
 
 class TelegramService
 {
-    public static function test() {
+    public function test() {
         return 'TelegramService';
     }
 }
