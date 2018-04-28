@@ -161,7 +161,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         // telegram
-        App\Providers\TelegramServicesProvider::class
+        // App\Providers\TelegramServicesProvider::class
 
     ],
 
@@ -212,7 +212,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'TelegramService' => App\Services\TelegramService::class
+        // 'TelegramService' => App\Services\TelegramService::class
 
     ],
 

@@ -27,8 +27,8 @@ class MainController extends Controller
         $allJson = json_encode($params);
 
         if(@$params['message']['left_chat_member']) {
-            $lol = TelegramService::test();
-
+            $a = new TelegramService();
+            $lol = $a->test();
             return 'Ok'.' '.$lol;
         }
 
