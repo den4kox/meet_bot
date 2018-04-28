@@ -16,12 +16,16 @@ Route::get('/home', function () {
 });
 
 
-Route::get('/', 'MainController@get');
-Route::post('/', 'MainController@post');
+Route::get('/', 'MainController@qwe');
+Route::post('/', 'MainController@qwe');
 
-Route::get('/update', 'MainController@get');
-Route::post('/update', 'MainController@post');
+Route::get('/update', 'MainController@qwe');
+Route::post('/update', 'MainController@qwe');
 
 Route::post('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
 Route::put('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
 Route::get('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
+
+Route::any('{all}', function(){
+    return 'Lol';
+})->where('all', '.*');

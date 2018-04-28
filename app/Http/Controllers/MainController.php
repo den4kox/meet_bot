@@ -37,4 +37,9 @@ class MainController extends Controller
 
         return 'gooo';
     }
+    public function qwe(Request $request) {
+        // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
+        
+        return 'Rgooo';
+    }
 }
