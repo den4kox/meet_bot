@@ -24,9 +24,9 @@ Route::post('/', 'MainController@qwe');
 Route::get('/update', 'MainController@qwe');
 Route::post('/update', 'MainController@qwe');
 
-Route::post('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
-Route::post('528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
-Route::get('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
+Route::post('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get1');
+Route::post('528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get2');
+Route::get('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get3');
 
 Route::any('{all}', function(){
     $apiKey = '528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ'; // Put your bot's API key here

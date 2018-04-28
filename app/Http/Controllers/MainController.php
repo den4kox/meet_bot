@@ -20,7 +20,23 @@ class MainController extends Controller
         $this->client = new Client( array( 'base_uri' => $apiURL ) );
     }
 
-    public function get(Request $request) {
+    public function get1(Request $request) {
+        // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
+        $resp = $this->client->post('sendMessage', 
+            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка" ) ) 
+        );
+
+        return 'gooo';
+    }
+    public function get2(Request $request) {
+        // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
+        $resp = $this->client->post('sendMessage', 
+            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка" ) ) 
+        );
+
+        return 'gooo';
+    }
+    public function get3(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
         $resp = $this->client->post('sendMessage', 
             array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка" ) ) 
