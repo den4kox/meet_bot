@@ -25,7 +25,7 @@ Route::get('/update', 'MainController@qwe');
 Route::post('/update', 'MainController@qwe');
 
 Route::post('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
-Route::put('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
+Route::post('528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
 Route::get('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
 
 Route::any('{all}', function(){
