@@ -58,12 +58,18 @@ class TelegramService
     }
 
     public function addUser($data) {
+
+        $userData = $data['new_chat_participant'];
+
         $user = Users::firstOrCreate([
-            "id" => $data['uid'],
-            "first_name" => $data['first_name'],
-            "last_name" => $data['last_name']
+            "id" => $userData['uid'],
+            "first_name" => $userData['first_name'],
+            "last_name" => $userData['last_name']
 
         ]);
+        $message = "Добро пожаловать ".$user->first_name." ".$user->last_name.". Пригласил ".$data['from']['first_name']." ".$data['from']['last_name'];
+        $this->sendMessage($data['chat']['id'], $message);
+
         return $user;
     }
 }
