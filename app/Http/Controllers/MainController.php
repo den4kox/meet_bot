@@ -20,29 +20,15 @@ class MainController extends Controller
         $this->client = new Client( array( 'base_uri' => $apiURL ) );
     }
 
-    public function get1(Request $request) {
+    public function handler(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
         $resp = $this->client->post('sendMessage', 
             array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка1" ) ) 
         );
+        $statusCode = $res->getStatusCode();
+        $body = $resp->getBody();
 
-        return 'gooo';
-    }
-    public function get2(Request $request) {
-        // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
-        $resp = $this->client->post('sendMessage', 
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка2" ) ) 
-        );
-
-        return 'gooo';
-    }
-    public function get3(Request $request) {
-        // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
-        $resp = $this->client->post('sendMessage', 
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка3" ) ) 
-        );
-
-        return 'gooo';
+        return response()->json(['status' => $statusCode, 'body' => $body]);
     }
 
     public function post(Request $request) {

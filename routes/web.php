@@ -25,7 +25,7 @@ Route::get('/update', 'MainController@qwe');
 Route::post('/update', 'MainController@qwe');
 
 Route::post('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get1');
-Route::post('528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get2');
+Route::post('telegram/handler', 'MainController@handler');
 Route::get('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get3');
 
 Route::any('{all}', function(){
