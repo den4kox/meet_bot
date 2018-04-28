@@ -22,9 +22,18 @@ class MainController extends Controller
 
     public function handler(Request $request) {
         // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
-        $all = json_encode($request->all());
+        $params = $request->all();
+        
+        $allJson = json_encode($params);
+
+        if(@$params['message']['left_chat_member']) {
+            $lol = TelegramService::test();
+
+            return 'Ok'.' '.$lol;
+        }
+
         $resp = $this->client->post('sendMessage',
-            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => $all ) )
+            array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => $allJson ) )
         );
         $statusCode = $resp->getStatusCode();
         $body = $resp->getBody();
