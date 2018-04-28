@@ -25,7 +25,7 @@ class MainController extends Controller
         $resp = $this->client->post('sendMessage', 
             array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка1" ) ) 
         );
-        $statusCode = $res->getStatusCode();
+        $statusCode = $resp->getStatusCode();
         $body = $resp->getBody();
 
         return response()->json(['status' => $statusCode, 'body' => $body]);
