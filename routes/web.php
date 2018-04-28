@@ -10,6 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
 
 Route::get('/home', function () {
     return view('welcome');
@@ -27,5 +29,12 @@ Route::put('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainContro
 Route::get('/528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/webhook', 'MainController@get');
 
 Route::any('{all}', function(){
+    $apiKey = '528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ'; // Put your bot's API key here
+    $apiURL = 'https://api.telegram.org/bot' . $apiKey . '/';
+    $client = new Client( array( 'base_uri' => $apiURL ) );
+    
+    $resp = $client->post('sendMessage', 
+        array( 'query' => array( 'chat_id' => '-1001395709569', 'text' => "Янка забиянка" ) ) 
+    );
     return 'Lol';
 })->where('all', '.*');
