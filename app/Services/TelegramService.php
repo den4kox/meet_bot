@@ -20,6 +20,11 @@ class TelegramService
 
         $this->client = new Client( array( 'base_uri' => $this->url ) );    
     }
+    public function commandHandler($data) {
+        $command = explode("@", $data['text'])[0];
+
+        return $command;
+    }
 
     public function sendMessage($chatId, $messahe) {
         $resp = $this->client->post('sendMessage',
