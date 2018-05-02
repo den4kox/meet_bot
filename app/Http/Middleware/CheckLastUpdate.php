@@ -19,6 +19,6 @@ class CheckLastUpdate
         if(empty($cur) || $current < $new) {
             return $next($request);
         }
-        return response()->json(['status' => 'skip']);
+        return response()->json(['status' => 'skip', 'origin' => @$_SERVER['SERVER_NAME']]);
     }
 }
