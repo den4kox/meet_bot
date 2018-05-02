@@ -42,7 +42,7 @@ class MainController extends Controller
         if(@$params['message']['new_chat_participant']) {
             $res = $this->telegram->addUser($params['message']);
             
-            //return $res;
+            return $res;
         }
 
         $resp = $this->telegram->sendMessage('-1001395709569', $allJson);
