@@ -6,7 +6,8 @@ use GuzzleHttp\Client;
 use App\Utils\TelegramUtils;
 use App\General;
 use App\Users;
-
+use App\Events;
+use App\Questions;
 class TelegramService
 {
     public function __construct()
@@ -28,6 +29,8 @@ class TelegramService
                 return $this->attach($data['from']);
             case '/deattach':
                 return $this->deattach($data['from']);
+            case '/startmeeting':
+                return $this->startMeeting();    
         }
     }
 
@@ -102,5 +105,21 @@ class TelegramService
         $this->sendMessage($data['chat']['id'], $message);
 
         return $user;
+    }
+
+    function startMeeting() {
+        $lastEvent = Events::orderBy('id', 'desc')->first();
+        $lastEvent->status_id = 2;
+        $lastEvent->save();
+
+        $event = Events::create([
+            'status_id' => 1,
+        ]);
+        
+        $users = Users::all();
+        $questions = Questions::first();
+        foreach($users as $user) {
+            $this->sendMessage($user->id, $questions->text);
+        }
     }
 }
