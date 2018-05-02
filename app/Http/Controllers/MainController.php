@@ -32,24 +32,23 @@ class MainController extends Controller
         $params = $request->all();
         
         $allJson = json_encode($params);
-        
+
         if(@$params['message']['left_chat_participant']) {
             $res = $this->telegram->deleteUser($params['message']);
             
-            // return $res;
+            return $res;
         }
 
         if(@$params['message']['new_chat_participant']) {
             $res = $this->telegram->addUser($params['message']);
             
-            // return $res;
+            return $res;
         }
 
         $resp = $this->telegram->sendMessage('-1001395709569', $allJson);
-        
-        // $statusCode = $resp->getStatusCode();
-        // $body = $resp->getBody();
+        $statusCode = $resp->getStatusCode();
+        $body = $resp->getBody();
 
-        // return response()->json(['status' => $statusCode, 'body' => $body]);
+        return response()->json(['status' => $statusCode, 'body' => $body, 'params' => $allJson]);
     }
 }

@@ -22,3 +22,5 @@ Route::post('telegram/handler', 'MainController@handler');
 Route::post('/setGeneralTable', 'MainController@setGeneralTable');
 
 Route::post('setHook', 'MainController@setHook');
+
+Route::post('addUser', 'MainController@addUser');
