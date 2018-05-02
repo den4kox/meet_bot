@@ -124,12 +124,14 @@ class TelegramService
         $question = Questions::first();
         foreach($users as $user) {
             $this->sendMessage($user->id, $question->text);
-
+            
             $answers = $user->answers()->create([
                 'event_id' => $event->id,
                 'question_id' => $question->id,
                 'text' => 'Empty'
             ]);
+
+            return $answers;
         }
     }
 }
