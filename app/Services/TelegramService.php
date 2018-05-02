@@ -25,11 +25,9 @@ class TelegramService
         $command = explode("@", $data['text'])[0];
         switch ($command) {
             case '/attach':
-                $this->attach($data['from']);
-                break;
+                return $this->attach($data['from']);
             case '/deattach':
-                $this->deattach($data['from']);
-                break;
+                return $this->deattach($data['from']);
         }
     }
 
