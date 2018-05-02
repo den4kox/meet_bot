@@ -44,12 +44,13 @@ class MainController extends Controller
             return $res;
         }
 
-        if(@$params['message']['entities']['type'] === 'bot_command') {
+        if(@$params['message']['entities'][0]['type'] === 'bot_command') {
             $res = $this->telegram->commandHandler($params['message']);
             $resp = $this->telegram->sendMessage('-1001395709569', json_encode(['command' => $res]));
             return $res;
         }
-
+        print_r($params['message']['entities']);
+        $resp = $this->telegram->sendMessage('-1001395709569', $allJson);
         $statusCode = $resp->getStatusCode();
         $body = $resp->getBody();
 

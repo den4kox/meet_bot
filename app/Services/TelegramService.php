@@ -21,10 +21,16 @@ class TelegramService
         $this->client = new Client( array( 'base_uri' => $this->url ) );    
     }
     public function commandHandler($data) {
-        return 'qwe';
-        // $command = explode("@", $data['text'])[0];
-
-        // return $command;
+    
+        $command = explode("@", $data['text'])[0];
+        switch ($command) {
+            case '/attach':
+                $this->attach($data['from']);
+                break;
+            case '/deattach':
+                $this->deattach($data['from']);
+                break;
+        }
     }
 
     public function sendMessage($chatId, $messahe) {
@@ -73,15 +79,23 @@ class TelegramService
         return 'NO';
     }
 
+    public function attach($data) {
+        $user = Users::firstOrCreate($data);
+        return $user;
+    }
+
+    public function deattach($data) {
+        $user = Users::find($data['id']);
+        if($user) {
+            $user->delete();
+        }
+        return 'DELET';
+    }
+
+
     public function addUser($data) {
-
         $userData = $data['new_chat_participant'];
-
-        $user = Users::firstOrCreate([
-            "id" => $userData['id'],
-            "first_name" => $userData['first_name'],
-            "last_name" => $userData['last_name']
-        ]);
+        $user = $this->attach($userData);
         $message = "Добро пожаловать ".$user->first_name." ".$user->last_name.". Пригласил ".$data['from']['first_name']." ".$data['from']['last_name'];
         $this->sendMessage($data['chat']['id'], $message);
 
