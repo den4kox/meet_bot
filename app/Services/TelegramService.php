@@ -31,6 +31,8 @@ class TelegramService
                 ] 
             ] 
         );
+
+        return $resp;
     }
 
     public function setHook($url) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Support\Facades\DB;
 use Closure;
 
 class CheckLastUpdate
@@ -10,8 +11,14 @@ class CheckLastUpdate
     {
         $params = $request->all();
         $cur = DB::table('general')->where('label', 'last-update-id')->first();
-        if(empty($cur) || (int)$cur->value < (int)$params['update_id']) {
+        $current = (int)@$cur->value;
+        $new = (int)$params['update_id'];
+        print_r($current);
+        print_r('--');
+        print_r($new);
+        if(empty($cur) || $current < $new) {
             return $next($request);
         }
+        return response()->json(['status' => 'skip']);
     }
 }
