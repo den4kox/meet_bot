@@ -12,12 +12,12 @@
 */
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
-
+use App\Http\Middleware\CheckLastUpdate;
 Route::get('/home', function () {
     return view('welcome');
 });
 
-Route::post('telegram/handler', 'MainController@handler');
+Route::post('telegram/handler', 'MainController@handler')->middleware(CheckLastUpdate::class);;
 
 Route::post('/setGeneralTable', 'MainController@setGeneralTable');
 

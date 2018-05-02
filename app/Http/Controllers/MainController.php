@@ -29,7 +29,8 @@ class MainController extends Controller
 
     public function handler(Request $request) {
         $params = $request->all();
-        
+        $this->utils->setGeneralTable('last-update-id', $params['update_id']);
+        $this->utils->setGeneralTable('last-message-id', $params['message']['message_id']);
         $allJson = json_encode($params);
 
         if(@$params['message']['left_chat_participant']) {
