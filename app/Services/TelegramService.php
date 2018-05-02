@@ -78,7 +78,11 @@ class TelegramService
     }
 
     public function attach($data) {
-        $user = Users::firstOrCreate($data);
+        $user = Users::firstOrCreate([
+            'id' => $data['id'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+        ]);
         return $user;
     }
 
