@@ -30,7 +30,7 @@ class TelegramService
             case '/deattach':
                 return $this->deattach($data['from']);
             case '/startmeeting':
-                return $this->startMeeting();    
+                return $this->startMeeting($data['message']);    
         }
     }
 
@@ -107,7 +107,7 @@ class TelegramService
         return $user;
     }
 
-    function startMeeting() {
+    function startMeeting($data) {
         $lastEvent = Events::orderBy('id', 'desc')->first();
         if(!empty($lastEvent)) {
             $lastEvent->status_id = 2;
@@ -117,11 +117,19 @@ class TelegramService
         $event = Events::create([
             'status_id' => 1,
         ]);
-        
+        $owner = $data['from']['last_name']." ".$data['from']['first_name'];
+        $message = "$owner начал Миттинг! Смотри приват!";
+        $this->sendMessage($data['chat']['id'], $message);        
         $users = Users::all();
-        $questions = Questions::first();
+        $question = Questions::first();
         foreach($users as $user) {
-            $this->sendMessage($user->id, $questions->text);
+            $this->sendMessage($user->id, $question->text);
+
+            $answers = $user->answers()->create([
+                'event_id' => $event->id,
+                'question_id' => $question->id,
+                'text' => 'Empty'
+            ]);
         }
     }
 }
