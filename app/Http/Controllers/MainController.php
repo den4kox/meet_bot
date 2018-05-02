@@ -28,7 +28,6 @@ class MainController extends Controller
 
 
     public function handler(Request $request) {
-        // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/sendMessage
         $params = $request->all();
         
         $allJson = json_encode($params);
@@ -36,7 +35,7 @@ class MainController extends Controller
         if(@$params['message']['left_chat_participant']) {
             $res = $this->telegram->deleteUser($params['message']);
             
-            //return $res;
+            return $res;
         }
 
         if(@$params['message']['new_chat_participant']) {

@@ -60,8 +60,9 @@ class TelegramService
             $message = "Пользователь ".$fullName." покинул нас "; // .$data['from']['first_name']." ".$data['from']['last_name'];
             $this->sendMessage($data['chat']['id'], $message);
             $user->delete();
+            return 'GOOD';
         }
-        
+        return 'NO';
     }
 
     public function addUser($data) {
