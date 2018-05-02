@@ -34,6 +34,8 @@ class MainController extends Controller
 
         if(@$params['message']['left_chat_participant']) {
             $res = $this->telegram->deleteUser($params['message']);
+
+            return $res;
         }
 
         if(@$params['message']['new_chat_participant']) {
