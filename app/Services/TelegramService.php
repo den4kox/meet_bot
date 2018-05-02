@@ -109,9 +109,11 @@ class TelegramService
 
     function startMeeting() {
         $lastEvent = Events::orderBy('id', 'desc')->first();
-        $lastEvent->status_id = 2;
-        $lastEvent->save();
-
+        if(!empty($lastEvent)) {
+            $lastEvent->status_id = 2;
+            $lastEvent->save();
+        }
+        
         $event = Events::create([
             'status_id' => 1,
         ]);
