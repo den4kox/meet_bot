@@ -32,7 +32,7 @@ class MainController extends Controller
         $this->utils->setGeneralTable('last-update-id', $params['update_id']);
         $this->utils->setGeneralTable('last-message-id', $params['message']['message_id']);
         $allJson = json_encode($params);
-
+        $allJson2 = json_encode($_SERVER);
         if(@$params['message']['left_chat_participant']) {
             $res = $this->telegram->deleteUser($params['message']);
 
@@ -46,7 +46,7 @@ class MainController extends Controller
         }
 
         $resp = $this->telegram->sendMessage('-1001395709569', $allJson);
-        $resp = $this->telegram->sendMessage('-1001395709569', @$_SERVER['SERVER_NAME']);
+        $resp = $this->telegram->sendMessage('-1001395709569', $allJson2);
         $statusCode = $resp->getStatusCode();
         $body = $resp->getBody();
 
