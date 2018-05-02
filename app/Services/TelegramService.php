@@ -53,9 +53,10 @@ class TelegramService
 
     public function deleteUser($data) {
         $user = User::find($data['left_chat_participant']['id']);
+        $fullName = $user->first_name." ".$user->last_name;
 
         $user->delete();
-        $message = "Пользователь ".$user->first_name." ".$user->last_name." покинул нас ".$data['from']['first_name']." ".$data['from']['last_name'];
+        $message = "Пользователь ".$fullName." покинул нас ".$data['from']['first_name']." ".$data['from']['last_name'];
         $this->sendMessage($data['chat']['id'], $message);
     }
 
