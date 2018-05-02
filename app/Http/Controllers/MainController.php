@@ -33,9 +33,7 @@ class MainController extends Controller
         $allJson = json_encode($params);
 
         if(@$params['message']['left_chat_participant']) {
-            // $res = $this->telegram->deleteUser($params['message']);
-            $resp = $this->telegram->sendMessage('-1001395709569', $allJson);
-            return 'qwe';
+            $res = $this->telegram->deleteUser($params['message']);
         }
 
         if(@$params['message']['new_chat_participant']) {
