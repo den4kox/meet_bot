@@ -30,7 +30,7 @@ class TelegramService
             case '/deattach':
                 return $this->deattach($data['from']);
             case '/startmeeting':
-                return $this->startMeeting($data['message']);    
+                return $this->startMeeting($data);    
         }
     }
 
