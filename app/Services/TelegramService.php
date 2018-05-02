@@ -52,9 +52,11 @@ class TelegramService
     }
 
     public function deleteUser($data) {
-        $user = User::find($data['uid']);
+        $user = User::find($data['left_chat_participant']['id']);
 
         $user->delete();
+        $message = "Пользователь ".$user->first_name." ".$user->last_name." покинул нас ".$data['from']['first_name']." ".$data['from']['last_name'];
+        $this->sendMessage($data['chat']['id'], $message);
     }
 
     public function addUser($data) {
