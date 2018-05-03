@@ -144,8 +144,9 @@ class TelegramService
         $owner = $data['from']['last_name']." ".$data['from']['first_name'];
         $message = "$owner начал Миттинг! Смотри приват!";
         $this->sendMessage($data['chat']['id'], $message);        
-        $users = Users::where('status', 1)->all();
+        $users = Users::where('status', 1)->get();
         $question = Questions::first();
+        
         foreach($users as $user) {
             $this->sendMessage($user->id, $question->text);
             
