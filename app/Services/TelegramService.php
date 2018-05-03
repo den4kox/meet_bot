@@ -183,7 +183,7 @@ class TelegramService
 
     public function addUser($data) {
         $userData = $data['new_chat_participant'];
-        $user = $this->attach($userData);
+        $user = $this->attach($userData, $data['chat']);
         $message = "Добро пожаловать ".$user->first_name." ".$user->last_name.". Пригласил ".$data['from']['first_name']." ".$data['from']['last_name'];
         $this->sendMessage($data['chat']['id'], $message);
 
