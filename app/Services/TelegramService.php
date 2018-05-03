@@ -132,7 +132,7 @@ class TelegramService
     }
 
     function startMeeting($data) {
-        $lastEvent = Events::orderBy('id', 'desc')->first();
+        $lastEvent = Events::orderBy('id', 'desc')->where('status_id', 1)->first();
         if(!empty($lastEvent)) {
             $lastEvent->status_id = 2;
             $lastEvent->save();
@@ -144,7 +144,7 @@ class TelegramService
         $owner = $data['from']['last_name']." ".$data['from']['first_name'];
         $message = "$owner начал Миттинг! Смотри приват!";
         $this->sendMessage($data['chat']['id'], $message);        
-        $users = Users::where('status', 1)->get();
+        $users = Users::where('status', 1)->all();
         $question = Questions::first();
         foreach($users as $user) {
             $this->sendMessage($user->id, $question->text);
