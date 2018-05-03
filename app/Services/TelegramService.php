@@ -130,8 +130,6 @@ class TelegramService
                 'question_id' => $question->id,
                 'text' => 'Empty'
             ]);
-
-            return $answers;
         }
     }
 }
