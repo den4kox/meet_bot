@@ -57,7 +57,7 @@ class TelegramService
             $message .= "*****************************\n";
         }
         print_r($message);
-        $this->sendMessage($data['chat']['id'], urlencode($message));
+        $this->sendMessage($data['chat']['id'], $message);
     }
 
     public function sendMessage($chatId, $messahe) {
