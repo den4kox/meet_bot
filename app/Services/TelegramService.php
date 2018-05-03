@@ -71,24 +71,23 @@ class TelegramService
         $user = Users::find($data['left_chat_participant']['id']);
         if(!empty($user)) {
             $fullName = $user->first_name." ".$user->last_name;
-
             
             $message = "Пользователь ".$fullName." покинул нас...( Его кикнул ".$data['from']['first_name']." ".$data['from']['last_name'];
             $this->sendMessage($data['chat']['id'], $message);
-            $user->delete();
+            $user->status = 0;
+            $user->save();
             return 'GOOD';
         }
         return 'NO';
     }
 
     public function attach($user, $chat) {
-        $newuser = Users::find($user['id']);
+        $newuser = Users::where('id', $user['id'])->where('status', 1)->get();
         $message = "";
         if(empty($newuser)) {
-            $newuser = Users::create([
-                'id' => $user['id'],
-                'first_name' => $user['first_name'],
-                'last_name' => $user['last_name'],
+            $newuser = Users::updateOrCreate(
+                [ 'id' => $user['id'], 'first_name' => $user['first_name'], 'last_name' => $user['last_name'],
+                [ 'status' => 1]
             ]);
             $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name;
             
@@ -104,7 +103,8 @@ class TelegramService
     public function deattach($data) {
         $user = Users::find($data['id']);
         if($user) {
-            $user->delete();
+            $user->status = 0;
+            $user->save();
         }
         return 'DELET';
     }
@@ -132,7 +132,7 @@ class TelegramService
         $owner = $data['from']['last_name']." ".$data['from']['first_name'];
         $message = "$owner начал Миттинг! Смотри приват!";
         $this->sendMessage($data['chat']['id'], $message);        
-        $users = Users::all();
+        $users = Users::where('status', 1)->get();
         $question = Questions::first();
         foreach($users as $user) {
             $this->sendMessage($user->id, $question->text);
@@ -149,7 +149,11 @@ class TelegramService
         $response = $data['text'];
         $userId = $data['from']['id'];
         $user = Users::find($userId);
-
+        if($user->status === 0) {
+            $message = "Уважаемый! сначала /attach, а потом миттинг";
+            $this->sendMessage($user->id, $message);
+            return '';
+        }
 
         $event = Events::where('status_id', 1)->first();
         if(empty($event)) {
