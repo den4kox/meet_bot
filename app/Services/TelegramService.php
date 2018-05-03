@@ -31,8 +31,33 @@ class TelegramService
             case '/deattach':
                 return $this->deattach($data['from'], $data['chat']);
             case '/startmeeting':
-                return $this->startMeeting($data);    
+                return $this->startMeeting($data);
+            case '/show':
+                return $this->show($data);        
         }
+    }
+
+    public function show($data) {
+        $user = Users::find($data['from']['id']);
+        if(empty($user)) {
+            return '';
+        }
+
+        $lastEvent = Events::orderBy('id', 'desc')->first();
+        $answers = $lastEvent->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
+        
+        $message = 'Event #'.$lastEvent->id.' Дата:'.$lastEvent->created_at.'\n';
+        $message .= '  '.$user->first_name.' '.$user->lastName.'\n';
+
+        foreach($answers as $answer) {
+            print_r($answer);
+            $message .= '*****************************'.'\n';
+            $message .= $answer['question']['text'].'\n';
+            $message .= $answer['text'].'\n';
+            $message .= '*****************************'.'\n';
+        }
+        print_r($message);
+        $this->sendMessage($data['chat']['id'], $message);
     }
 
     public function sendMessage($chatId, $messahe) {
@@ -170,7 +195,7 @@ class TelegramService
 
         $event = Events::where('status_id', 1)->first();
         if(empty($event)) {
-            $message = "Миттинг закончен. Для просмотра ваших сообщений наберите команду /showlast(not work)";
+            $message = "Миттинг закончен. Для просмотра ваших последних ответов наберите команду /show(not work)";
             $this->sendMessage($userId, $message);
             return 'event not found';
         }

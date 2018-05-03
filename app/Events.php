@@ -8,5 +8,10 @@ class Events extends Model
 {
     protected $table = 'events';
 
-    protected $fillable = ['status_id'];
+    protected $fillable = ['id', 'status_id'];
+
+    public function answers()
+    {
+        return $this->hasMany('App\Answers', 'event_id', 'id');
+    }
 }
