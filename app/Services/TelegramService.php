@@ -29,7 +29,7 @@ class TelegramService
             case '/attach':
                 return $this->attach($data['from'], $data['chat']);
             case '/deattach':
-                return $this->deattach($data['from']);
+                return $this->deattach($data['from'], $data['chat']);
             case '/startmeeting':
                 return $this->startMeeting($data);    
         }
@@ -109,11 +109,14 @@ class TelegramService
         return $newuser;
     }
 
-    public function deattach($data) {
+    public function deattach($data, $chat) {
         $user = Users::find($data['id']);
         if($user) {
             $user->status = 0;
             $user->save();
+
+            $message = $user->first_name." ".$user->last_name." отказался от миттингов!";
+            $this->sendMessage($chat['id'], $message);
         }
         return 'DELET';
     }
