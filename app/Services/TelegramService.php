@@ -142,10 +142,11 @@ class TelegramService
 
         $event = Events::where('status_id', 1)->first();
         if(empty($event)) {
+            $message = "Миттинг закончен. Для просмотра ваших сообщений наберите команду /showlast(not work)";
+            $this->sendMessage($userId, $message);
             return 'event not found';
         }
         $answers = Answers::where('user_id', $userId)->where('event_id', $event->id);
-        $questions = Questions::all();
         $countAnswers = $answers->count();
         $questionsCount = Questions::count();
         $currentAnswer = $answers->where('text', 'Empty')->first();
@@ -157,7 +158,7 @@ class TelegramService
             $message = "Спасибо. Вы ответили на все вопросы.";
             $this->sendMessage($userId, $message);
         } else {
-            $question = $questions->forPage($countAnswers, 1)->first();
+            $question = Questions::skip($countAnswers)->take(1)->first();
             $this->sendMessage($userId, $question->text);
             $answer = $user->answers()->create([
                 'event_id' => $event->id,
