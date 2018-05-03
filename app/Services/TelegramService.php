@@ -8,6 +8,7 @@ use App\General;
 use App\Users;
 use App\Events;
 use App\Questions;
+use App\Answers;
 class TelegramService
 {
     public function __construct()
