@@ -56,7 +56,7 @@ class TelegramService
             $message .= PHP_EOL;
         }
         print_r($message);
-        $message = '*******************'.PHP_EOL;
+        $message .= '*******************'.PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
     }
 
