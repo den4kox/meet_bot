@@ -51,13 +51,13 @@ class TelegramService
 
         foreach($answers as $answer) {
             print_r($answer);
-            $message .= '*****************************'.'\n';
+            $message .= "*****************************\n";
             $message .= $answer['question']['text'].'\n';
             $message .= $answer['text'].'\n';
-            $message .= '*****************************'.'\n';
+            $message .= "*****************************\n";
         }
         print_r($message);
-        $this->sendMessage($data['chat']['id'], $message);
+        $this->sendMessage($data['chat']['id'], urlencode($message));
     }
 
     public function sendMessage($chatId, $messahe) {
