@@ -26,10 +26,10 @@ class TelegramService
     
         $command = explode("@", $data['text'])[0];
         switch ($command) {
-            case '/attach':
-                return $this->attach($data['from'], $data['chat']);
-            case '/deattach':
-                return $this->deattach($data['from'], $data['chat']);
+            case '/addme':
+                return $this->addMe($data['from'], $data['chat']);
+            case '/kickme':
+                return $this->kickMe($data['from'], $data['chat']);
             case '/startmeeting':
                 return $this->startMeeting($data);
             case '/show':
@@ -126,21 +126,7 @@ class TelegramService
         return $res->getBody();
     }
 
-    public function deleteUser($data) {
-        $user = Users::find($data['left_chat_participant']['id']);
-        if(!empty($user)) {
-            $fullName = $user->first_name." ".$user->last_name;
-            
-            $message = "Пользователь ".$fullName." покинул нас...( Его кикнул ".$data['from']['first_name']." ".$data['from']['last_name'];
-            $this->sendMessage($data['chat']['id'], $message);
-            $user->status = 0;
-            $user->save();
-            return 'GOOD';
-        }
-        return 'NO';
-    }
-
-    public function attach($user, $chat) {
+    public function addMe($user, $chat) {
         $newuser = Users::find($user['id']);
         $message = "";
         print_r($newuser);
@@ -149,13 +135,13 @@ class TelegramService
             $newuser = Users::create(
                 [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'status' => 1]
             );
-            $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name;
+            $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name." Напиши мне в приват Привет!";
             
         } else {
             if($newuser->status === 0) {
                 $newuser->status = 1;
                 $newuser->save();
-                $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name;
+                $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name." Напиши мне в приват Привет!";
 
             } else {
                 $message = $newuser->first_name." ".$newuser->last_name.", полегче! Ты уже участник митинга";
@@ -168,7 +154,7 @@ class TelegramService
         return $newuser;
     }
 
-    public function deattach($data, $chat) {
+    public function kickMe($data, $chat) {
         $user = Users::find($data['id']);
         if($user) {
             $user->status = 0;
@@ -178,16 +164,6 @@ class TelegramService
             $this->sendMessage($chat['id'], $message);
         }
         return 'DELET';
-    }
-
-
-    public function addUser($data) {
-        $userData = $data['new_chat_participant'];
-        $user = $this->attach($userData, $data['chat']);
-        $message = "Добро пожаловать ".$user->first_name." ".$user->last_name.". Пригласил ".$data['from']['first_name']." ".$data['from']['last_name'];
-        $this->sendMessage($data['chat']['id'], $message);
-
-        return $user;
     }
 
     function startMeeting($data) {
@@ -222,7 +198,7 @@ class TelegramService
         $userId = $data['from']['id'];
         $user = Users::find($userId);
         if($user->status === 0) {
-            $message = "Уважаемый! сначала /attach, а потом миттинг";
+            $message = "Уважаемый! сначала /addMe, а потом миттинг";
             $this->sendMessage($user->id, $message);
             return '';
         }

@@ -32,23 +32,11 @@ class MainController extends Controller
         $this->utils->setGeneralTable('last-update-id', $params['update_id']);
         $this->utils->setGeneralTable('last-message-id', $params['message']['message_id']);
         $allJson = json_encode($params);
-        $resp = $this->telegram->sendMessage('-1001395709569', $allJson);
-        
-        if(@$params['message']['left_chat_participant']) {
-            $res = $this->telegram->deleteUser($params['message']);
-
-            return $res;
-        }
-
-        if(@$params['message']['new_chat_participant']) {
-            $res = $this->telegram->addUser($params['message']);
-            
-            return $res;
-        }
+        $resp = $this->telegram->sendMessage('150401573', $allJson);
 
         if(@$params['message']['entities'][0]['type'] === 'bot_command') {
             $res = $this->telegram->commandHandler($params['message']);
-            $resp = $this->telegram->sendMessage('-1001395709569', json_encode(['command' => $res]));
+            $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]));
             return $res;
         }
 
