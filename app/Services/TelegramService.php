@@ -95,7 +95,7 @@ class TelegramService
         } else {
             if($newuser->status === 0) {
                 $newuser->status = 1;
-                $newuser->status->save();
+                $newuser->save();
                 $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name;
 
             } else {
