@@ -39,11 +39,35 @@ class TelegramService
         }
     }
 
-    public function showAll() {
+    public function showAll($data) {
         $lastEvent = Events::orderBy('id', 'desc')->first();
-        $answers = $lastEvent->answers()->groupby('user_id')->distinct()->get('user_id')->toArray();
-        print_r($answers);
-        return 'lol';
+        $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
+
+        $message = '*******************'.PHP_EOL;
+        $message .= 'Event #'.$lastEvent->id.'. Дата: '.$lastEvent->created_at.PHP_EOL;
+
+        foreach($users as $user) {
+            $user = Users::find($user);
+            $message .= $this->getUserAnswerMessage($user, $lastEvent);
+        }
+        $message .= '*******************'.PHP_EOL;
+        $this->sendMessage($data['chat']['id'], $message);
+        return 'qwe';
+    }
+
+    public function getUserAnswerMessage(Users $user, Events $event) {
+        $answers = $event->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
+
+        $message = '  '.$user->first_name.' '.$user->last_name.PHP_EOL;
+
+        foreach($answers as $key => $answer) {
+            print_r($answer);
+            $num = $key + 1;
+            $message .= "    ".$num.".) ".$answer['question']['text'].PHP_EOL;
+            $message .= "    ".$answer['text'].PHP_EOL;
+            $message .= PHP_EOL;
+        }
+        return $message;
     }
 
     public function show($data) {
