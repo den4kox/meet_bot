@@ -27,7 +27,7 @@ class TelegramService
         $command = explode("@", $data['text'])[0];
         switch ($command) {
             case '/attach':
-                return $this->attach($data['from']);
+                return $this->attach($data['from'], $data['chat']);
             case '/deattach':
                 return $this->deattach($data['from']);
             case '/startmeeting':
@@ -81,13 +81,24 @@ class TelegramService
         return 'NO';
     }
 
-    public function attach($data) {
-        $user = Users::firstOrCreate([
-            'id' => $data['id'],
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-        ]);
-        return $user;
+    public function attach($user, $chat) {
+        $newuser = Users::find($user['id']);
+        $message = "";
+        if(empty($newuser)) {
+            $newuser = Users::create([
+                'id' => $user['id'],
+                'first_name' => $user['first_name'],
+                'last_name' => $user['last_name'],
+            ]);
+            $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name;
+            
+        } else {
+            $message = $newuser->first_name." ".$newuser->last_name.", полегче! Ты уже участник митинга";
+        }
+        
+        $this->sendMessage($chat->id, $message);
+
+        return $newuser;
     }
 
     public function deattach($data) {
