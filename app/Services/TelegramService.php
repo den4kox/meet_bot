@@ -39,6 +39,20 @@ class TelegramService
         }
     }
 
+    public function deleteUser($data) {
+        $user = Users::find($data['left_chat_participant']['id']);
+        if(!empty($user)) {
+            $fullName = $user->first_name." ".$user->last_name;
+            
+            $message = "Пользователь ".$fullName." покинул нас...( Его кикнул ".$data['from']['first_name']." ".$data['from']['last_name'];
+            $this->sendMessage($data['chat']['id'], $message);
+            $user->status = 0;
+            $user->save();
+            return 'GOOD';
+        }
+        return 'NO';
+    }
+    
     public function showAll($data) {
         $lastEvent = Events::orderBy('id', 'desc')->first();
         $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
