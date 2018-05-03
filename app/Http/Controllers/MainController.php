@@ -51,6 +51,11 @@ class MainController extends Controller
             $resp = $this->telegram->sendMessage('-1001395709569', json_encode(['command' => $res]));
             return $res;
         }
+
+        if(@$params['message']['chat']['type'] === 'private') {
+            $res = $this->telegram->answerHandler($params['message']);
+            return $res;
+        }
         $statusCode = $resp->getStatusCode();
         $body = $resp->getBody();
 
