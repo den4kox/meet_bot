@@ -82,17 +82,26 @@ class TelegramService
     }
 
     public function attach($user, $chat) {
-        $newuser = Users::where('id', $user['id'])->where('status', 1)->get();
+        $newuser = Users::find($user['id']);
         $message = "";
+        print_r($newuser);
         if(empty($newuser)) {
-            $newuser = Users::updateOrCreate(
-                [ 'id' => $user['id'], 'first_name' => $user['first_name'], 'last_name' => $user['last_name'],
-                [ 'status' => 1]
-            ]);
+            print_r("QQQQ");
+            $newuser = Users::create(
+                [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'status' => 1]
+            );
             $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name;
             
         } else {
-            $message = $newuser->first_name." ".$newuser->last_name.", полегче! Ты уже участник митинга";
+            if($newuser->status === 0) {
+                $newuser->status = 1;
+                $newuser->status->save();
+                $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name;
+
+            } else {
+                $message = $newuser->first_name." ".$newuser->last_name.", полегче! Ты уже участник митинга";
+            }
+                        
         }
         
         $this->sendMessage($chat['id'], $message);
