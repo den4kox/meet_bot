@@ -45,18 +45,18 @@ class TelegramService
 
         $lastEvent = Events::orderBy('id', 'desc')->first();
         $answers = $lastEvent->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
-        
-        $message = 'Event #'.$lastEvent->id.' Дата:'.$lastEvent->created_at.PHP_EOL;
-        $message .= '  '.$user->first_name.' '.$user->lastName.PHP_EOL;
+        $message = '*******************'.PHP_EOL;
+        $message .= 'Event #'.$lastEvent->id.' Дата:'.$lastEvent->created_at.PHP_EOL;
+        $message .= '  '.$user->first_name.' '.$user->last_name.PHP_EOL;
 
-        foreach($answers as $answer) {
+        foreach($answers as $key => $answer) {
             print_r($answer);
-            $message .= "*****************************".PHP_EOL;
-            $message .= $answer['question']['text'].PHP_EOL;
-            $message .= $answer['text'].'\n';
-            $message .= "*****************************".PHP_EOL;
+            $message .= $key.".) ".$answer['question']['text'].PHP_EOL;
+            $message .= $answer['text'].PHP_EOL;
+            $message .= PHP_EOL;
         }
         print_r($message);
+        $message = '*******************'.PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
     }
 
