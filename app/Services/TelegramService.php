@@ -96,7 +96,7 @@ class TelegramService
             $message = $newuser->first_name." ".$newuser->last_name.", полегче! Ты уже участник митинга";
         }
         
-        $this->sendMessage($chat->id, $message);
+        $this->sendMessage($chat['id'], $message);
 
         return $newuser;
     }
