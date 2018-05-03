@@ -33,8 +33,17 @@ class TelegramService
             case '/startmeeting':
                 return $this->startMeeting($data);
             case '/show':
-                return $this->show($data);        
+                return $this->show($data);
+            case '/showall':
+                return $this->showAll($data);            
         }
+    }
+
+    public function showAll() {
+        $lastEvent = Events::orderBy('id', 'desc')->first();
+        $answers = $lastEvent->answers()->groupby('user_id')->distinct()->get('user_id')->toArray();
+        print_r($answers);
+        return 'lol';
     }
 
     public function show($data) {
@@ -46,7 +55,7 @@ class TelegramService
         $lastEvent = Events::orderBy('id', 'desc')->first();
         $answers = $lastEvent->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
         $message = '*******************'.PHP_EOL;
-        $message .= 'Event #'.$lastEvent->id.' Дата:'.$lastEvent->created_at.PHP_EOL;
+        $message .= 'Event #'.$lastEvent->id.'. Дата: '.$lastEvent->created_at.PHP_EOL;
         $message .= '  '.$user->first_name.' '.$user->last_name.PHP_EOL;
 
         foreach($answers as $key => $answer) {
