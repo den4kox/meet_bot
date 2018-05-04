@@ -60,6 +60,7 @@ class TelegramService
             $message .= "  ".$user->first_name." ".$user->last_name.PHP_EOL;
         }
         $message .= "-------------".PHP_EOL;
+        $this->sendMessage($data['chat']['id'], $message);
         return 'ok';
     }
 
