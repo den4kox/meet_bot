@@ -32,6 +32,8 @@ class TelegramService
                 return $this->kickMe($data['from'], $data['chat']);
             case '/startmeeting':
                 return $this->startMeeting($data);
+            case '/stopmeeting':
+                return $this->stopMeeting($data);    
             case '/show':
                 return $this->show($data);
             case '/showall':
@@ -179,6 +181,27 @@ class TelegramService
         }
         return 'DELET';
     }
+
+    public function stopMeeting($data) {
+        $events = Events::where('status_id', 1)->get();
+        $from = $data['from'];
+        $chatId= $data['chat']['id'];
+        if($events->count() > 0) {
+            foreach($events as $event) {
+                $event->status_id = 2;
+                $event->save();
+            }
+            $message = $from['first_name']." ".$from['last_name'].' окончил миттинг. Результат:';
+            $this->sendMessage($chatId, $message);
+            $this->showAll($data);
+        } else {
+            $message = 'Активных митингов нету!';
+            $this->sendMessage($chatId, $message);
+        }
+        
+        
+        return 'ok';
+    } 
 
     function startMeeting($data) {
         $lastEvent = Events::orderBy('id', 'desc')->where('status_id', 1)->first();
