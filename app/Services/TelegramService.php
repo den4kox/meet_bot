@@ -45,9 +45,22 @@ class TelegramService
             case '/addquestion':
                 return $this->addQuestion($data);
             case '/deletequestion':
-                return $this->deleteQuestion($data);               
+                return $this->deleteQuestion($data);
+            case '/users':
+                return $this->getActiveUsers($data);                  
         }
         return $command;
+    }
+
+    public function getActiveUsers($data) {
+        $users = Users::where('status', 1)->get();
+        $message = "Список участников миттинга:".PHP_EOL;
+        $message .= "-------------".PHP_EOL;
+        foreach($users as $user) {
+            $message .= "  ".$user->first_name." ".$user->last_name.PHP_EOL;
+        }
+        $message .= "-------------".PHP_EOL;
+        return 'ok';
     }
 
     public function deleteUser($data) {
