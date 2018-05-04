@@ -159,7 +159,7 @@ class TelegramService
         return [$command, $text];
     }
     public function showQuestions($data) {
-        $from = $data['from']['id'];
+        $from = $data['chat']['id'];
         $questions = Questions::all();
         $message = 'Вопросы:'.PHP_EOL.PHP_EOL;
         $message .= '--------'.PHP_EOL;
