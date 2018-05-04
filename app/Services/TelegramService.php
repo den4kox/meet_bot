@@ -23,8 +23,8 @@ class TelegramService
         $this->client = new Client( array( 'base_uri' => $this->url ) );    
     }
     public function commandHandler($data) {
-    
-        $command = explode("@", $data['text'])[0];
+        $cm = $this->getTextFromCommand($data['text'], $data['entities']['length'])[0];
+        $command = explode("@", $cm['text'])[0];
         switch ($command) {
             case '/addme':
                 return $this->addMe($data['from'], $data['chat']);
@@ -37,7 +37,15 @@ class TelegramService
             case '/show':
                 return $this->show($data);
             case '/showall':
-                return $this->showAll($data);            
+                return $this->showAll($data);
+            case '/showquestions':
+                return $this->showQuestions($data);
+            case '/editquestion':
+                return $this->editQuestion($data);
+            case '/addquestion':
+                return $this->addQuestion($data);
+            case '/deletequestion':
+                return $this->deleteQuestion($data);               
         }
     }
 
@@ -108,6 +116,71 @@ class TelegramService
         print_r($message);
         $message .= '*******************'.PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
+    }
+    function getTextFromCommand($command, $index) {
+        $text = mb_substr($command, $index+1);   
+        $command = mb_substr($command, 0, $index);
+        return [$command, $text];
+    }
+    public function showQuestions($data) {
+        $from = $data['from']['id'];
+        $questions = Questions::all();
+        $message = 'Вопросы:'.PHP_EOL.PHP_EOL;
+        $message .= '--------'.PHP_EOL;
+        foreach($questions as $question) {
+            $message .= "id=".$question->id.". Text ".$question->id.PHP_EOL;
+        }
+        $message .= '--------'.PHP_EOL;
+        $this->sendMessage($from, $message);
+        return 'ok';
+    }
+    public function editQuestion($data) {
+        $values = $this->getTextFromCommand($data['text'], $data['entities']['length']);
+        $from = $data['from']['id'];
+        if (count($values) === 2) {
+            $id_text = explode("_", $values[1]);
+            $q = Questions::find($id_text[0]);
+            if(!empty($q)) {
+                $q->text = $id_text[1];
+                $q->save();
+                $this->sendMessage($from, "Вопрос c id ".$id_text[0]." изменен!");
+                return 'ok';
+            }
+            $this->sendMessage($from, "Вопрос c id ".$values[1]." не найден!");
+            return 'quetion not found';
+        }
+        $this->sendMessage($from, "Команда должна иметь вид: /command text");
+        return 'error';
+    }
+    public function addQuestion($data) {
+        $values = $this->getTextFromCommand($data['text'], $data['entities']['length']);
+        $from = $data['from']['id'];
+        if (count($values) === 2) {
+            $newQuestion = Questions::create([
+                'text' => $values[1],
+            ]);
+            $this->sendMessage($from, "Вопрос Добавлен! /showquestions - чтобы посотреть все вопросы.");
+            return 'ok';
+        }
+        $this->sendMessage($from, "Команда должна иметь вид: /command text");
+        return 'error';
+        
+    }
+    public function deleteQuestion($data) {
+        $values = $this->getTextFromCommand($data['text'], $data['entities']['length']);
+        $from = $data['from']['id'];
+        if (count($values) === 2) {
+            $q = Questions::find($values[1]);
+            if(!empty($q)) {
+                $q->delete();
+                $this->sendMessage($from, "Вопрос c id ".$id_text[0]." удален!");
+                return 'ok';
+            }
+            $this->sendMessage($from, "Вопрос c id ".$values[1]." не найден!");
+            return 'question not found';
+        }
+        $this->sendMessage($from, "Команда должна иметь вид: /command text");
+        return 'error';
     }
 
     public function sendMessage($chatId, $messahe) {
