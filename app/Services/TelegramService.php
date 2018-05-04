@@ -174,7 +174,7 @@ class TelegramService
             $q = Questions::find($values[1]);
             if(!empty($q)) {
                 $q->delete();
-                $this->sendMessage($from, "Вопрос c id ".$id_text[0]." удален!");
+                $this->sendMessage($from, "Вопрос c id ".$values[1]." удален!");
                 return 'ok';
             }
             $this->sendMessage($from, "Вопрос c id ".$values[1]." не найден!");
