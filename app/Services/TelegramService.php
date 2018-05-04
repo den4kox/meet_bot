@@ -23,8 +23,8 @@ class TelegramService
         $this->client = new Client( array( 'base_uri' => $this->url ) );    
     }
     public function commandHandler($data) {
-        $cm = $this->getTextFromCommand($data['text'], $data['entities']['length'])[0];
-        $command = explode("@", $cm['text'])[0];
+        $cm = $this->getTextFromCommand($data['text'], $data['entities'][0]['length'])[0];
+        $command = explode("@", $cm)[0];
         switch ($command) {
             case '/addme':
                 return $this->addMe($data['from'], $data['chat']);
@@ -47,6 +47,7 @@ class TelegramService
             case '/deletequestion':
                 return $this->deleteQuestion($data);               
         }
+        return $command;
     }
 
     public function deleteUser($data) {
@@ -118,7 +119,7 @@ class TelegramService
         $this->sendMessage($data['chat']['id'], $message);
     }
     function getTextFromCommand($command, $index) {
-        $text = mb_substr($command, $index+1);   
+        $text = trim(mb_substr($command, $index));   
         $command = mb_substr($command, 0, $index);
         return [$command, $text];
     }
@@ -128,14 +129,14 @@ class TelegramService
         $message = 'Вопросы:'.PHP_EOL.PHP_EOL;
         $message .= '--------'.PHP_EOL;
         foreach($questions as $question) {
-            $message .= "id=".$question->id.". Text ".$question->id.PHP_EOL;
+            $message .= "id=".$question->id.". Text: ".$question->text.PHP_EOL;
         }
         $message .= '--------'.PHP_EOL;
         $this->sendMessage($from, $message);
         return 'ok';
     }
     public function editQuestion($data) {
-        $values = $this->getTextFromCommand($data['text'], $data['entities']['length']);
+        $values = $this->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $from = $data['from']['id'];
         if (count($values) === 2) {
             $id_text = explode("_", $values[1]);
@@ -153,7 +154,7 @@ class TelegramService
         return 'error';
     }
     public function addQuestion($data) {
-        $values = $this->getTextFromCommand($data['text'], $data['entities']['length']);
+        $values = $this->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $from = $data['from']['id'];
         if (count($values) === 2) {
             $newQuestion = Questions::create([
@@ -167,7 +168,7 @@ class TelegramService
         
     }
     public function deleteQuestion($data) {
-        $values = $this->getTextFromCommand($data['text'], $data['entities']['length']);
+        $values = $this->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $from = $data['from']['id'];
         if (count($values) === 2) {
             $q = Questions::find($values[1]);
