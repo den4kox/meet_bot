@@ -104,7 +104,7 @@ class TelegramService
         $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
 
         $message = '*******************'.PHP_EOL;
-        $message .= 'Event #'.$lastEvent->id.'. Дата: '.$lastEvent->created_at.PHP_EOL;
+        $message .= 'Миттинг #'.$lastEvent->id.'. Дата: '.$lastEvent->created_at.PHP_EOL;
 
         foreach($users as $user) {
             $user = Users::find($user);
