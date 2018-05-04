@@ -239,14 +239,14 @@ class TelegramService
                 [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'status' => 1]
             );
             $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name.PHP_EOL;;
-            $message .= "Напиши приватное сообщение, чтобы я мог задавать тебе вопросы.";
+            $message .= "Напиши приватное сообщение(@shoxel_meeting_bot), чтобы я мог задавать тебе вопросы.";
             
         } else {
             if($newuser->status === 0) {
                 $newuser->status = 1;
                 $newuser->save();
                 $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name.PHP_EOL;;
-                $message .= "Напиши приватное сообщение, чтобы я мог задавать тебе вопросы.";
+                $message .= "Напиши приватное сообщение(@shoxel_meeting_bot), чтобы я мог задавать тебе вопросы.";
 
             } else {
                 $message = $newuser->first_name." ".$newuser->last_name.", полегче! Ты уже участник митинга";
