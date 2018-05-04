@@ -47,9 +47,30 @@ class TelegramService
             case '/deletequestion':
                 return $this->deleteQuestion($data);
             case '/users':
-                return $this->getActiveUsers($data);                  
+                return $this->getActiveUsers($data);
+            case '/start':
+                return $this->start($data);                      
         }
         return $command;
+    }
+    public function start($data) {
+        $message = "Список Доступных команд:".PHP_EOL;
+
+        $message .= "/addme - Добавь меня".PHP_EOL;
+        $message .= "/kickme - Удали меня".PHP_EOL;
+        $message .= "/startmeeting - Начать миттинг".PHP_EOL;
+        $message .= "/stopmeeting - Окончить миттинг".PHP_EOL;
+        $message .= "/show - Последние ответы текущего пользователя".PHP_EOL;
+        $message .= "/showall - Ответы всех".PHP_EOL;
+        $message .= "/showquestions - Показать вопросы".PHP_EOL;
+        $message .= "/addquestion - Добавить вопрос".PHP_EOL;
+        $message .= "/editquestion - Редактировать вопрос".PHP_EOL;
+        $message .= "/deletequestion - Удалить вопрос".PHP_EOL;
+        $message .= "/users - Участники миттинга".PHP_EOL;
+        $message .= "/start - Список команд".PHP_EOL;
+
+        $this->sendMessage($data['chat']['id'], $message);
+        return 'ok';
     }
 
     public function getActiveUsers($data) {
