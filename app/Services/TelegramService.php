@@ -191,7 +191,7 @@ class TelegramService
     public function addQuestion($data) {
         $values = $this->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $from = $data['from']['id'];
-        if (count($values) === 2) {
+        if (count($values) === 2 && strlen($values[1]) > 3) {
             $newQuestion = Questions::create([
                 'text' => $values[1],
             ]);
