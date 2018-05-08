@@ -8,7 +8,7 @@ class Events extends Model
 {
     protected $table = 'events';
 
-    protected $fillable = ['id', 'status_id'];
+    protected $fillable = ['id', 'status_id', 'group_id'];
 
     public function answers()
     {

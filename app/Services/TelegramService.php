@@ -302,7 +302,7 @@ class TelegramService
     } 
 
     function startMeeting($data) {
-        $lastEvent = Events::orderBy('id', 'desc')->where('status_id', 1)->first();
+        $lastEvent = Events::where('group_id', $data['chat']['id'])->where('status_id', 1)->orderBy('id', 'desc')->first();
         if(!empty($lastEvent)) {
             $lastEvent->status_id = 2;
             $lastEvent->save();
@@ -310,25 +310,47 @@ class TelegramService
         
         $event = Events::create([
             'status_id' => 1,
+            'group_id' => $data['chat']['id'],
         ]);
-        $owner = $data['from']['last_name']." ".$data['from']['first_name'];
-        $message = "$owner начал Миттинг! Смотри приват!";
-        $this->sendMessage($data['chat']['id'], $message);        
-        $users = Users::where('status', 1)->get();
-        $question = Questions::first();
-        
-        foreach($users as $user) {
-            $this->sendMessage($user->id, $question->text);
-            
-            $answers = $user->answers()->create([
-                'event_id' => $event->id,
-                'question_id' => $question->id,
-                'text' => 'Empty'
-            ]);
+        $user = Users::find($data['from']['id']);
+        if($this->chechIsModerator($user, $data['chat']['id'])) {
+            $moder = $data['from']['last_name']." ".$data['from']['first_name'];
+            $message = "$moder начал Миттинг! Смотри приват!";
+            $this->sendMessage($data['chat']['id'], $message);
+
+            $group = Groups::find($data['chat']['id']);
+            $users = $group->users()->where('status', 1)->get();
+            $question = Questions::where('group_id', $group->id)->first();
+            foreach($users as $user) {
+                $this->sendMessage($user->id, $question->text);
+                
+                $answers = $user->answers()->create([
+                    'event_id' => $event->id,
+                    'question_id' => $question->id,
+                    'text' => 'Empty'
+                ]);
+            }
         }
+
     }
 
     // utils
+    public function chechIsModerator(Users $user, $groupId) {
+        if($user) {
+            $isAdmin = $user
+                ->roles()
+                ->where('role_id', 2)
+                ->where('group_id', $groupId)
+                ->get();
+            if($isAdmin) {
+               return true;
+            }
+            return false;
+        }
+        print_r('QOQOQ');
+        return false;
+    }
+
     public function sendMessage($chatId, $messahe) {
         $resp = $this->client->post('sendMessage',
              ['query' => ['chat_id' => $chatId,'text' => $messahe]] 

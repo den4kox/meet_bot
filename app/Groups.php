@@ -15,4 +15,14 @@ class Groups extends Model
     {
         return $this->hasMany('App\Questions', 'group_id', 'id');
     }
+
+    public function events() {
+        return $this->hasMany('App\Events', 'group_id', 'id');
+    }
+
+    public function users() {
+        return $this->belongsToMany('App\Users', 'user_groups', 'group_id', 'user_id')
+        ->as('status')
+        ->withPivot('status');
+    }
 }
