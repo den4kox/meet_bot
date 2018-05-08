@@ -73,8 +73,12 @@ class TelegramService
 
     public function deleteGroup($data) {
         $group = Groups::find($data['chat']['id']);
-        $group->delete();
-        return 'ok';
+        
+        if($group) {
+            $group->delete();
+            return 'ok';
+        }
+        return 'group not found';
     }
 
     // Commands
