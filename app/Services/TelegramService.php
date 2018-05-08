@@ -68,6 +68,7 @@ class TelegramService
         foreach($defaultQuestions as $defaultQuestion) {
             $group->questions()->firstOrCreate($defaultQuestion);
         }
+        return 'ok';
     }
 
     public function deleteGroup($data) {
