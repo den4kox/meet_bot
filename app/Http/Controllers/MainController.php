@@ -47,7 +47,7 @@ class MainController extends Controller
         }
 
         if(@$params['message']['left_chat_participant']['is_bot']
-        && @$params['message']['left_chat_participant']['username'] === 'shoxel_meeting_bot') { {
+        && @$params['message']['left_chat_participant']['username'] === 'shoxel_meeting_bot') {
             $res = $this->telegram->deleteGroup($params['message']);
             return $res;
         }
