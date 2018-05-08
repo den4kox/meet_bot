@@ -248,15 +248,16 @@ class TelegramService
     public function addMe($user, $chat) {
         $newuser = Users::find($user['id']);
         $message = "";
-        print_r($newuser);
         if(empty($newuser)) {
             $newuser = Users::create(
-                [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'status' => 1]
+                [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name']]
             );
-        } 
-        if($newuser->groups()->where('id', $chat['id'])->count() === 0) {
-            $newuser->roles()->attach(3, ['group_id' => $chat['id']]);
-            $newuser->groups()->attach($chat['id'], ['status' => 1]);
+            $newuser=Users::find($user['id']);
+        }
+        
+        if($newuser->groups()->where('group_id', $chat['id'])->where('status', 1)->count() === 0) {
+            $newuser->roles()->syncWithoutDetaching([3 => ['group_id' => $chat['id']]]);
+            $newuser->groups()->syncWithoutDetaching([$chat['id'] => ['status' => 1]]);
             $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name.PHP_EOL;;
             $message .= "Напиши приватное сообщение(@shoxel_meeting_bot), чтобы я мог задавать тебе вопросы.";
             
@@ -272,9 +273,7 @@ class TelegramService
     public function kickMe($data, $chat) {
         $user = Users::find($data['id']);
         if($user) {
-            $user->status = 0;
-            $user->save();
-
+            $user->groups()->syncWithoutDetaching([$chat['id'] => ['status' => 0]]);
             $message = $user->first_name." ".$user->last_name." отказался от миттингов!";
             $this->sendMessage($chat['id'], $message);
         }
