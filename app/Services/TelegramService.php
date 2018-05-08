@@ -59,12 +59,13 @@ class TelegramService
     }
     // global
     public function botJoinGroup($data) {
-        $group = Groups::firstOrCreate([
+        Groups::firstOrCreate([
             'id' => $data['chat']['id'],
             'name' => $data['chat']['title'],
         ]);
+        $group = Groups::find($data['chat']['id']);
         $defaultQuestions = QuestionsDefault::get(['text'])->toArray();
-    
+       
         foreach($defaultQuestions as $defaultQuestion) {
             $group->questions()->firstOrCreate($defaultQuestion);
         }

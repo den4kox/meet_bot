@@ -36,19 +36,20 @@ class MainController extends Controller
         if(@$params['message']['new_chat_participant']['is_bot'] 
         && @$params['message']['new_chat_participant']['username'] === 'shoxel_meeting_bot') {
             $res = $this->telegram->botJoinGroup($params['message']);
-
+            $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]));
             return $res;
         }
 
         if(@$params['message']['left_chat_participant']['is_bot']
         && @$params['message']['left_chat_participant']['username'] === 'shoxel_meeting_bot') {
             $res = $this->telegram->deleteGroup($params['message']);
+            $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]));
             return $res;
         }
-        
+
         if(@$params['message']['left_chat_participant']) {
             $res = $this->telegram->deleteUser($params['message']);
-
+            $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]));
             return $res;
         }
 
