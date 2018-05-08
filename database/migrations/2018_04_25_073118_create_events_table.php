@@ -16,14 +16,11 @@ class CreateEventsTable extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('status_id')->nullable();
+            $table->integer('group_id');
             $table->timestamps();
 
-            $table
-                ->foreign('status_id')
-                ->references('id')
-                ->on('event_status')
-                ->onUpdate('CASCADE')
-                ->onDelete('SET NULL');
+            $table->foreign('status_id')->references('id')->on('event_status')->onUpdate('CASCADE')->onDelete('SET NULL');
+            $table->foreign('group_id')->references('id')->on('groups')->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 
