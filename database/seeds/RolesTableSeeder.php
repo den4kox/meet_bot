@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class RoleTypesTableSeeder extends Seeder
+class RolesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,14 +11,14 @@ class RoleTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('role_types')->insert([
+        DB::table('roles')->insert([
             [
                 'priority' => 10,
                 'name' => 'admin',
             ],
             [
                 'priority' => 5,
-                'name' => 'moderator',
+                'name' => 'moderator',ß
             ],
             [
                 'priority' => 1,

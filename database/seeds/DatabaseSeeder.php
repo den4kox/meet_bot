@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             EventStatusTableSeeder::class,
             GeneralTableSeeder::class,
             RoleTypesTableSeeder::class,
+            QuestionsDefaultTableSeeder::class,
         ]);
     }
 }

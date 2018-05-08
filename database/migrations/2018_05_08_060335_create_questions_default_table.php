@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRoleTypesTable extends Migration
+class CreateQuestionsDefaultTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateRoleTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('role_types', function (Blueprint $table) {
+        Schema::create('questions_default', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('priority');
-            $table->string('name');
+            $table->string('text');
         });
     }
 
@@ -27,6 +26,6 @@ class CreateRoleTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('role_types');
+        Schema::dropIfExists('questions_default');
     }
 }

@@ -15,15 +15,16 @@ class TelegramService
     {
         $this->utils = new TelegramUtils();
 
-        $data = $this->utils->getGeneral(General::all());
+        $data = $this->utils->getGeneral();
         $this->token = @$data['access-token'];
         $this->host = @$data['telegram-host'];
         $this->url = $this->host.'bot'.$this->token.'/';
 
         $this->client = new Client( array( 'base_uri' => $this->url ) );    
     }
+
     public function commandHandler($data) {
-        $cm = $this->getTextFromCommand($data['text'], $data['entities'][0]['length'])[0];
+        $cm = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length'])[0];
         $command = explode("@", $cm)[0];
         switch ($command) {
             case '/addme':
@@ -53,9 +54,9 @@ class TelegramService
         }
         return $command;
     }
+    // Commands
     public function start($data) {
         $message = "Список Доступных команд:".PHP_EOL;
-
         $message .= "/addme - Добавь меня".PHP_EOL;
         $message .= "/kickme - Удали меня".PHP_EOL;
         $message .= "/startmeeting - Начать миттинг".PHP_EOL;
@@ -94,9 +95,9 @@ class TelegramService
             $this->sendMessage($data['chat']['id'], $message);
             $user->status = 0;
             $user->save();
-            return 'GOOD';
+            return 'ok';
         }
-        return 'NO';
+        return 'user not found';
     }
     
     public function showAll($data) {
@@ -153,11 +154,7 @@ class TelegramService
         $message .= '*******************'.PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
     }
-    function getTextFromCommand($command, $index) {
-        $text = trim(mb_substr($command, $index));   
-        $command = mb_substr($command, 0, $index);
-        return [$command, $text];
-    }
+
     public function showQuestions($data) {
         $from = $data['chat']['id'];
         $questions = Questions::all();
@@ -171,7 +168,7 @@ class TelegramService
         return 'ok';
     }
     public function editQuestion($data) {
-        $values = $this->getTextFromCommand($data['text'], $data['entities'][0]['length']);
+        $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $from = $data['chat']['id'];
         if (count($values) === 2) {
             $id_text = explode("_", $values[1]);
@@ -189,7 +186,7 @@ class TelegramService
         return 'error';
     }
     public function addQuestion($data) {
-        $values = $this->getTextFromCommand($data['text'], $data['entities'][0]['length']);
+        $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $from = $data['chat']['id'];
         if (count($values) === 2 && strlen($values[1]) > 3) {
             $newQuestion = Questions::create([
@@ -203,7 +200,7 @@ class TelegramService
         
     }
     public function deleteQuestion($data) {
-        $values = $this->getTextFromCommand($data['text'], $data['entities'][0]['length']);
+        $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $from = $data['chat']['id'];
         if (count($values) === 2) {
             $q = Questions::find($values[1]);
@@ -217,38 +214,6 @@ class TelegramService
         }
         $this->sendMessage($from, "Команда должна иметь вид: /command text");
         return 'error';
-    }
-
-    public function sendMessage($chatId, $messahe) {
-        $resp = $this->client->post('sendMessage',
-             [
-            
-                'query' => [
-                    'chat_id' => $chatId, 
-                    'text' => $messahe,
-                ] 
-            ] 
-        );
-
-        return $resp;
-    }
-
-    public function setHook($url) {
-        $res = $this->client->post('setWebhook',
-            [
-                'query' => [
-                    'url' => $url
-                ]
-            ]
-        );
-        print_r($res->getStatusCode());
-        if($res->getStatusCode() === 200) {
-            General::updateOrCreate(
-                ['label' => 'hook-url'],
-                ['value'=> $url]
-            ); 
-        }
-        return $res->getBody();
     }
 
     public function addMe($user, $chat) {
@@ -339,6 +304,32 @@ class TelegramService
             ]);
         }
     }
+
+    // utils
+    public function sendMessage($chatId, $messahe) {
+        $resp = $this->client->post('sendMessage',
+             ['query' => ['chat_id' => $chatId,'text' => $messahe]] 
+        );
+
+        return $resp;
+    }
+
+    public function setHook($url) {
+        $salt = str_random(5);
+        $res = $this->client->post('setWebhook',
+            ['query' => ['url' => $url.$salt]]
+        );
+        print_r($res->getStatusCode());
+        if($res->getStatusCode() === 200) {
+            General::updateOrCreate(
+                ['label' => 'hook-url'],
+                ['value'=> $url.$salt]
+            ); 
+        }
+        return $res->getBody();
+    }
+
+    
 
     public function answerHandler($data) {
         $response = $data['text'];
