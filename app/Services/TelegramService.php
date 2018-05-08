@@ -79,8 +79,6 @@ class TelegramService
         $group = Groups::find($data['chat']['id']);
         
         if($group) {
-            $message = "Бот покинул группу ".$group->name;
-            $this->sendMessage($group->id, $message);
             $group->delete();
             return 'ok';
         }
