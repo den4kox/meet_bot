@@ -69,6 +69,9 @@ class TelegramService
         foreach($defaultQuestions as $defaultQuestion) {
             $group->questions()->firstOrCreate($defaultQuestion);
         }
+        $message = "Миттинг бот активирован!";
+        $this->sendMessage($group->id, $message);
+
         return 'ok';
     }
 
@@ -76,6 +79,8 @@ class TelegramService
         $group = Groups::find($data['chat']['id']);
         
         if($group) {
+            $message = "Бот покинул группу ".$group;
+            $this->sendMessage($group->id, $message);
             $group->delete();
             return 'ok';
         }
