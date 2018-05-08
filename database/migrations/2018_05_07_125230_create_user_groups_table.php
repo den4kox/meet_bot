@@ -17,6 +17,7 @@ class CreateUserGroupsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->integer('group_id');
+            $table->boolean('status');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreign('group_id')->references('id')->on('groups')->onUpdate('CASCADE')->onDelete('CASCADE');
         });

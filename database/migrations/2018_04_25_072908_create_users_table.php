@@ -18,7 +18,6 @@ class CreateUsersTable extends Migration
             $table->primary('id');
             $table->string('first_name');
             $table->string('last_name');
-            $table->boolean('status');
             $table->timestamps();
         });
     }

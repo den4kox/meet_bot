@@ -65,10 +65,8 @@ class TelegramService
         ]);
         $group = Groups::find($data['chat']['id']);
         $defaultQuestions = QuestionsDefault::get(['text'])->toArray();
-       
-        foreach($defaultQuestions as $defaultQuestion) {
-            $group->questions()->firstOrCreate($defaultQuestion);
-        }
+        $group->questions()->createMany($defaultQuestions);
+        
         $message = "Миттинг бот активирован!";
         $this->sendMessage($group->id, $message);
 
@@ -255,20 +253,15 @@ class TelegramService
             $newuser = Users::create(
                 [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'status' => 1]
             );
+        } 
+        if($newuser->groups()->where('id', $chat['id'])->count() === 0) {
+            $newuser->roles()->attach(3, ['group_id' => $chat['id']]);
+            $newuser->groups()->attach($chat['id'], ['status' => 1]);
             $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name.PHP_EOL;;
             $message .= "Напиши приватное сообщение(@shoxel_meeting_bot), чтобы я мог задавать тебе вопросы.";
             
         } else {
-            if($newuser->status === 0) {
-                $newuser->status = 1;
-                $newuser->save();
-                $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name.PHP_EOL;;
-                $message .= "Напиши приватное сообщение(@shoxel_meeting_bot), чтобы я мог задавать тебе вопросы.";
-
-            } else {
-                $message = $newuser->first_name." ".$newuser->last_name.", полегче! Ты уже участник митинга";
-            }
-                        
+            $message = $newuser->first_name." ".$newuser->last_name.", полегче! Ты уже участник митинга";
         }
         
         $this->sendMessage($chat['id'], $message);
