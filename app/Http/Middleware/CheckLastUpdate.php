@@ -28,5 +28,6 @@ class CheckLastUpdate
         if(empty($cur) || $current < $new) {
             return $next($request);
         }
+        return response()->json(['status' => 'error', 'message' => 'Dublicate']);
     }
 }

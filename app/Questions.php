@@ -9,5 +9,5 @@ class Questions extends Model
     protected $table = 'questions';
     public $timestamps = false;
 
-    protected $fillable = ['text'];
+    protected $fillable = ['text', 'group_id'];
 }

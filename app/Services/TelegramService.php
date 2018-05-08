@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 use App\Utils\TelegramUtils;
 use App\General;
@@ -9,6 +10,8 @@ use App\Users;
 use App\Events;
 use App\Questions;
 use App\Answers;
+use App\Groups;
+use App\QuestionsDefault;
 class TelegramService
 {
     public function __construct()
@@ -54,6 +57,25 @@ class TelegramService
         }
         return $command;
     }
+    // global
+    public function botJoinGroup($data) {
+        $group = Groups::firstOrCreate([
+            'id' => $data['chat']['id'],
+            'name' => $data['chat']['title'],
+        ]);
+        $defaultQuestions = QuestionsDefault::get(['text'])->toArray();
+    
+        foreach($defaultQuestions as $defaultQuestion) {
+            $group->questions()->firstOrCreate($defaultQuestion);
+        }
+    }
+
+    public function deleteGroup($data) {
+        $group = Groups::find($data['chat']['id']);
+        $group->delete();
+        return 'ok';
+    }
+
     // Commands
     public function start($data) {
         $message = "Список Доступных команд:".PHP_EOL;

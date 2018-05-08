@@ -10,4 +10,9 @@ class Groups extends Model
     public $timestamps = false;
 
     protected $fillable = ['name', 'id'];
+
+    public function questions()
+    {
+        return $this->hasMany('App\Questions', 'group_id', 'id');
+    }
 }
