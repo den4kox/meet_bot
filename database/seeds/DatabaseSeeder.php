@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             EventStatusTableSeeder::class,
             GeneralTableSeeder::class,
-            RoleTypesTableSeeder::class,
+            RolesTableSeeder::class,
             QuestionsDefaultTableSeeder::class,
         ]);
     }

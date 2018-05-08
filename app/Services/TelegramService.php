@@ -323,7 +323,11 @@ class TelegramService
         if($res->getStatusCode() === 200) {
             General::updateOrCreate(
                 ['label' => 'hook-url'],
-                ['value'=> $url.$salt]
+                ['value'=> $url]
+            ); 
+            General::updateOrCreate(
+                ['label' => 'hook-salt'],
+                ['value'=> $salt]
             ); 
         }
         return $res->getBody();

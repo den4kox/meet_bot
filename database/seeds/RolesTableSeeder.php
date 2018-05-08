@@ -18,7 +18,7 @@ class RolesTableSeeder extends Seeder
             ],
             [
                 'priority' => 5,
-                'name' => 'moderator',ß
+                'name' => 'moderator',
             ],
             [
                 'priority' => 1,

@@ -13,28 +13,18 @@ class GeneralTableSeeder extends Seeder
      */
     public function run()
     {
-        $salt = str_random(5);
+
         DB::table('general')->insert([
             [
                 'label' => 'access-token',
                 'value' => env('ACCESS_TOKEN', 'empty'),
             ],
             [
-                'label' => 'hook-url',
-                'value' => 'https://shoxel.com/telegram/handler/',
-            ],
-            [
                 'label' => 'telegram-host',
                 'value' => 'https://api.telegram.org/',
             ],
-            [
-                'label' => 'hook-salt',
-                'value' => $salt,
-            ],
         ]);
-        $url = General::where('label', 'hook-url')->first()->value.$salt.'/';
         $TS = new TelegramService();
-        $TS->setHook($url);
-
+        $TS->setHook('https://shoxel.com/telegram/handler/');
     }
 }
