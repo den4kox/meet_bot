@@ -303,20 +303,20 @@ class TelegramService
     } 
 
     function startMeeting($data) {
-        $lastEvent = Events::where('group_id', $data['chat']['id'])->where('status_id', 1)->orderBy('id', 'desc')->first();
-        if(!empty($lastEvent)) {
-            $lastEvent->status_id = 2;
-            $lastEvent->save();
-
-            $lastEvent->userActions()->delete();
-        }
-        
-        $event = Events::create([
-            'status_id' => 1,
-            'group_id' => $data['chat']['id'],
-        ]);
         $user = Users::find($data['from']['id']);
         if($this->chechIsModerator($user, $data['chat']['id'])) {
+            $lastEvent = Events::where('group_id', $data['chat']['id'])->where('status_id', 1)->orderBy('id', 'desc')->first();
+            if(!empty($lastEvent)) {
+                $lastEvent->status_id = 2;
+                $lastEvent->save();
+
+                $lastEvent->userActions()->delete();
+            }
+            
+            $event = Events::create([
+                'status_id' => 1,
+                'group_id' => $data['chat']['id'],
+            ]);
             $moder = $data['from']['last_name']." ".$data['from']['first_name'];
             $message = "$moder начал Миттинг! Смотри приват!";
             $this->sendMessage($data['chat']['id'], $message);
@@ -346,6 +346,9 @@ class TelegramService
                     $this->sendMessage($user->id, "Ожидается ответ на предыдущий вопрос...");
                 }
             }
+        } else {
+            $message = "У вас недостаточно прав!";
+            $this->sendMessage($data['chat']['id'], $message); 
         }
 
     }
@@ -416,15 +419,15 @@ class TelegramService
         if($user) {
             $isAdmin = $user
                 ->roles()
-                ->where('role_id', 2)
+                ->where('role_id', '<', 3)
                 ->where('group_id', $groupId)
-                ->get();
-            if($isAdmin) {
+                ->count();
+            print_r($isAdmin);
+            if($isAdmin !== 0) {
                return true;
             }
             return false;
         }
-        print_r('QOQOQ');
         return false;
     }
 
