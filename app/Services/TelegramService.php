@@ -185,63 +185,83 @@ class TelegramService
     }
 
     public function showQuestions($data) {
-        $from = $data['chat']['id'];
-        $questions = Questions::all();
+        $chatId = $data['chat']['id'];
+        $questions = Questions::where('group_id', $chatId)->all();
         $message = 'Вопросы:'.PHP_EOL.PHP_EOL;
         $message .= '--------'.PHP_EOL;
         foreach($questions as $question) {
             $message .= "id=".$question->id.". Text: ".$question->text.PHP_EOL;
         }
         $message .= '--------'.PHP_EOL;
-        $this->sendMessage($from, $message);
+        $this->sendMessage($chatId, $message);
         return 'ok';
     }
     public function editQuestion($data) {
         $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
-        $from = $data['chat']['id'];
+        $chatId = $data['chat']['id'];
+        $user = Users::find($data['from']['id']);
+        if(!$this->chechIsModerator($user, $chatId)) {
+            $emessage = "У вас недостаточно прав";
+            $this->sendMessage($chatId, $emessage);
+            return 'permission denied';
+        }
         if (count($values) === 2) {
             $id_text = explode("_", $values[1]);
-            $q = Questions::find($id_text[0]);
+            $q = Questions::where('group_id', $chatId)->where('id', $id_text[0]);
             if(!empty($q)) {
                 $q->text = $id_text[1];
                 $q->save();
-                $this->sendMessage($from, "Вопрос c id ".$id_text[0]." изменен!");
+                $this->sendMessage($chatId, "Вопрос c id ".$id_text[0]." изменен!");
                 return 'ok';
             }
-            $this->sendMessage($from, "Вопрос c id ".$values[1]." не найден!");
+            $this->sendMessage($chatId, "Вопрос c id ".$values[1]." не найден!");
             return 'quetion not found';
         }
-        $this->sendMessage($from, "Команда должна иметь вид: /command text");
+        $this->sendMessage($chatId, "Команда должна иметь вид: /command text");
         return 'error';
     }
     public function addQuestion($data) {
         $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
-        $from = $data['chat']['id'];
+        $chatId = $data['chat']['id'];
+        $user = Users::find($data['from']['id']);
+        
+        if(!$this->chechIsModerator($user, $chatId)) {
+            $emessage = "У вас недостаточно прав";
+            $this->sendMessage($chatId, $emessage);
+            return 'permission denied';
+        }
         if (count($values) === 2 && strlen($values[1]) > 3) {
             $newQuestion = Questions::create([
                 'text' => $values[1],
             ]);
-            $this->sendMessage($from, "Вопрос Добавлен! /showquestions - чтобы посотреть все вопросы.");
+            $this->sendMessage($chatId, "Вопрос Добавлен! /showquestions - чтобы посотреть все вопросы.");
             return 'ok';
         }
-        $this->sendMessage($from, "Команда должна иметь вид: /command text");
+        $this->sendMessage($chatId, "Команда должна иметь вид: /command text");
         return 'error';
         
     }
     public function deleteQuestion($data) {
         $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
-        $from = $data['chat']['id'];
+        $chatId = $data['chat']['id'];
+        $user = Users::find($data['from']['id']);
+        
+        if(!$this->chechIsModerator($user, $chatId)) {
+            $emessage = "У вас недостаточно прав";
+            $this->sendMessage($chatId, $emessage);
+            return 'permission denied';
+        }
         if (count($values) === 2) {
             $q = Questions::find($values[1]);
             if(!empty($q)) {
                 $q->delete();
-                $this->sendMessage($from, "Вопрос c id ".$values[1]." удален!");
+                $this->sendMessage($chatId, "Вопрос c id ".$values[1]." удален!");
                 return 'ok';
             }
-            $this->sendMessage($from, "Вопрос c id ".$values[1]." не найден!");
+            $this->sendMessage($chatId, "Вопрос c id ".$values[1]." не найден!");
             return 'question not found';
         }
-        $this->sendMessage($from, "Команда должна иметь вид: /command text");
+        $this->sendMessage($chatId, "Команда должна иметь вид: /command text");
         return 'error';
     }
 
