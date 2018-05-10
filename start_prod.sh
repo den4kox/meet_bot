@@ -17,5 +17,6 @@ docker-compose up -d caddy mysql phpmyadmin redis workspace
 docker-compose exec workspace composer install
 docker-compose exec workspace php artisan key:generate
 docker-compose exec workspace php artisan migrate
+docker-compose exec workspace php artisan db:seed
 
 

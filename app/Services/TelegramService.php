@@ -70,7 +70,7 @@ class TelegramService
         $message = "Миттинг бот активирован!";
         $this->sendMessage($group->id, $message);
 
-        return 'ok';
+        return $group;
     }
 
     public function deleteGroup($data) {
@@ -78,7 +78,7 @@ class TelegramService
         
         if($group) {
             $group->delete();
-            return 'ok';
+            return 'group delete!';
         }
         return 'group not found';
     }
