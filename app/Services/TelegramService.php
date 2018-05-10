@@ -389,7 +389,7 @@ class TelegramService
         $action = $user->actions()->first();
         if($action) {
             $action->status = 1;
-            $actions->save();
+            $action->save();
             $this->sendUserQuestion($user);
 
             return 'next question';
