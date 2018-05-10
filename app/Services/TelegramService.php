@@ -109,7 +109,8 @@ class TelegramService
         $message = "Список участников миттинга:".PHP_EOL;
         $message .= "-------------".PHP_EOL;
         foreach($users as $user) {
-            $message .= "  ".$user->first_name." ".$user->last_name.PHP_EOL;
+            $role = $user->roles()->first();
+            $message .= "  ".$user->first_name." ".$user->last_name.". Роль: ".$role.PHP_EOL;
         }
         $message .= "-------------".PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
