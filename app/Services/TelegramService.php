@@ -281,11 +281,12 @@ class TelegramService
     }
 
     public function stopMeeting($data) {
-        $events = Events::where('status_id', 1)->get();
+        $events = Events::where('group_id', $data['chat']['id'])->where('status_id', 1)->get();
         $from = $data['from'];
         $chatId= $data['chat']['id'];
         if($events->count() > 0) {
             foreach($events as $event) {
+                $event->userActions()->delete();
                 $event->status_id = 2;
                 $event->save();
             }
@@ -306,6 +307,8 @@ class TelegramService
         if(!empty($lastEvent)) {
             $lastEvent->status_id = 2;
             $lastEvent->save();
+
+            $lastEvent->userActions()->delete();
         }
         
         $event = Events::create([
@@ -320,33 +323,95 @@ class TelegramService
 
             $group = Groups::find($data['chat']['id']);
             $users = $group->users()->where('status', 1)->get();
-            $questions = Questions::where('group_id', $group->id)->get('id');
+            $questions = Questions::where('group_id', $group->id)->pluck('id')->toArray();
+            print_r($questions);
             foreach($users as $user) {
-                $arrayActions = $questions->map(function ($item, $key) {
-                    return [
+                $arrayActions = [];
+                $countActive = $user->actions()->where('status', 1)->count();
+                foreach($questions as $key => $q) {
+                    array_push($arrayActions, [
+                        'question_id' => $q,
                         'event_id' => $event->id,
-                        'question_id' => $item,
-                    ];
-                });
+                        'status' => $key === 0 && $countActive < 1 ? 1 : 0,
+                    ]);
+                }
 
                 $user->actions()->createMany(
                     $arrayActions
                 );
-                
-                // $qmessage = $question->text.'('.$group->name.' '.$group->id.')';
-                // $this->sendMessage($user->id, $qmessage);
-                
-                // $answers = $user->answers()->create([
-                //     'event_id' => $event->id,
-                //     'question_id' => $question->id,
-                //     'text' => 'Empty'
-                // ]);
+
+                if($countActive === 0) {
+                    $this->sendUserQuestion($user);
+                } else {
+                    $this->sendMessage($user->id, "Ожидается ответ на предыдущий вопрос...");
+                }
             }
         }
 
     }
 
+    public function answerHandler($data) {
+        $response = $data['text'];
+        $userId = $data['from']['id'];
+        $user = Users::find($userId);
+
+        $action = $user->actions()->where('status', 1)->first();
+        $question = Questions::find($action->question_id);
+        $event = Events::find($action->event_id);
+        $group = $event->group;
+
+        if(!$event || $event->status === 2) {
+            $message = "Миттинг закончен.";
+            $this->sendMessage($userId, $message);
+            $user->actions()->where('event_id', $action->event_id)->delete();
+
+            $action = $user->actions()->first();
+            if($action) {
+                $action->status = 1;
+                $actions->save();
+                $this->sendUserQuestion($user);
+
+                return 'next question';
+            } else {
+                $message = "Вопросов больше нет!";
+                $this->sendMessage($userId, $message);
+                return 'event not found';
+            }            
+        }
+
+        $currentAnswer = $user->answers()->create([
+            'event_id' => $event->id,
+            'question_id' => $question->id,
+            'text' => $response,
+        ]);
+        
+        $action->delete();
+        $action = $user->actions()->first();
+        if($action) {
+            $action->status = 1;
+            $actions->save();
+            $this->sendUserQuestion($user);
+
+            return 'next question';
+        } else {
+            $message = "Спасибо. Вы ответили на все вопросы.";
+            $this->sendMessage($userId, $message);
+        }
+    }
+
     // utils
+    public function sendUserQuestion(Users $user) {
+        $action = $user->actions()->where('status', 1)->first();
+
+        $question = Questions::find($action->question_id);
+        $event = Events::find($action->event_id);
+        $group = $event->group;
+        
+        $qmessage = $question->text.' ('.$group->name.' '.$group->id.')';
+        $this->sendMessage($user->id, $qmessage);
+        
+    }
+
     public function chechIsModerator(Users $user, $groupId) {
         if($user) {
             $isAdmin = $user
@@ -388,49 +453,5 @@ class TelegramService
             ); 
         }
         return $res->getBody();
-    }
-
-    
-
-    public function answerHandler($data) {
-        $response = $data['text'];
-        $userId = $data['from']['id'];
-
-        $user = Users::find($userId);
-
-        $gpoups = $user->groups->events()->where('status', 1)->get();
-        print_r($gpoups);
-        if($user->status === 0) {
-            $message = "Уважаемый! сначала /addMe, а потом миттинг";
-            $this->sendMessage($user->id, $message);
-            return '';
-        }
-
-        $event = Events::where('status_id', 1)->first();
-        if(empty($event)) {
-            $message = "Миттинг закончен. Для просмотра ваших последних ответов наберите команду /show(not work)";
-            $this->sendMessage($userId, $message);
-            return 'event not found';
-        }
-        $answers = Answers::where('user_id', $userId)->where('event_id', $event->id);
-        $countAnswers = $answers->count();
-        $questionsCount = Questions::count();
-        $currentAnswer = $answers->where('text', 'Empty')->first();
-        if(!empty($currentAnswer)) {
-            $currentAnswer->text = $response;
-            $currentAnswer->save();
-        }
-        if($questionsCount === $countAnswers) {
-            $message = "Спасибо. Вы ответили на все вопросы.";
-            $this->sendMessage($userId, $message);
-        } else {
-            $question = Questions::skip($countAnswers)->take(1)->first();
-            $this->sendMessage($userId, $question->text);
-            $answer = $user->answers()->create([
-                'event_id' => $event->id,
-                'question_id' => $question->id,
-                'text' => 'Empty'
-            ]);
-        }
     }
 }

@@ -18,6 +18,7 @@ class CreateUserActionTable extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('event_id');
             $table->unsignedInteger('question_id');
+            $table->boolean('status');
             $table->timestamps();
             
             $table->foreign('event_id')->references('id')->on('events')->onUpdate('CASCADE')->onDelete('CASCADE');

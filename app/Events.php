@@ -18,4 +18,10 @@ class Events extends Model
     public function group() {
         return $this->hasMany('App\Groups', 'group_id');
     }
+
+    public function userActions() {
+        return $this->hasMany('App\UserActions', 'event_id');
+    }
+
+    
 }
