@@ -104,7 +104,8 @@ class TelegramService
     }
 
     public function getActiveUsers($data) {
-        $users = Users::where('status', 1)->get();
+        $group = Groups::find($data['chat']['id']);
+        $users = $group->users()->where('status', 1)->get();
         $message = "Список участников миттинга:".PHP_EOL;
         $message .= "-------------".PHP_EOL;
         foreach($users as $user) {
