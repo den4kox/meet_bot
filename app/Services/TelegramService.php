@@ -186,7 +186,7 @@ class TelegramService
 
     public function showQuestions($data) {
         $chatId = $data['chat']['id'];
-        $questions = Questions::where('group_id', $chatId)->all();
+        $questions = Questions::where('group_id', $chatId)->get();
         $message = 'Вопросы:'.PHP_EOL.PHP_EOL;
         $message .= '--------'.PHP_EOL;
         foreach($questions as $question) {
