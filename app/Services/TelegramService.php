@@ -207,8 +207,9 @@ class TelegramService
         }
         if (count($values) === 2) {
             $id_text = explode("_", $values[1]);
-            $q = Questions::where('group_id', $chatId)->where('id', $id_text[0]);
+            $q = Questions::where('group_id', $chatId)->where('id', $id_text[0])->first();
             if(!empty($q)) {
+                print_r($q);
                 $q->text = $id_text[1];
                 $q->save();
                 $this->sendMessage($chatId, "Вопрос c id ".$id_text[0]." изменен!");
@@ -233,6 +234,7 @@ class TelegramService
         if (count($values) === 2 && strlen($values[1]) > 3) {
             $newQuestion = Questions::create([
                 'text' => $values[1],
+                'group_id' => $chatId,
             ]);
             $this->sendMessage($chatId, "Вопрос Добавлен! /showquestions - чтобы посотреть все вопросы.");
             return 'ok';
@@ -252,7 +254,7 @@ class TelegramService
             return 'permission denied';
         }
         if (count($values) === 2) {
-            $q = Questions::find($values[1]);
+            $q = Questions::where('group_id', $chatId)->where('id', $values[1])->first();
             if(!empty($q)) {
                 $q->delete();
                 $this->sendMessage($chatId, "Вопрос c id ".$values[1]." удален!");
