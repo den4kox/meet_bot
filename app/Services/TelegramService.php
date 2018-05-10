@@ -130,7 +130,7 @@ class TelegramService
     }
     
     public function showAll($data) {
-        $lastEvent = Events::orderBy('id', 'desc')->first();
+        $lastEvent = Events::where('group_id', $data['chat']['id'])->orderBy('id', 'desc')->first();
         $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
 
         $message = '*******************'.PHP_EOL;
@@ -166,7 +166,7 @@ class TelegramService
             return '';
         }
 
-        $lastEvent = Events::orderBy('id', 'desc')->first();
+        $lastEvent = Events::where('group_id', $data['chat']['id'])->orderBy('id', 'desc')->first();
         $answers = $lastEvent->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
         $message = '*******************'.PHP_EOL;
         $message .= 'Event #'.$lastEvent->id.'. Дата: '.$lastEvent->created_at.PHP_EOL;
