@@ -109,7 +109,7 @@ class TelegramService
         $message = "Список участников миттинга:".PHP_EOL;
         $message .= "-------------".PHP_EOL;
         foreach($users as $user) {
-            $role = $user->roles()->first();
+            $role = $user->roles()->where('group_id', $group->id)->first();
             $message .= "  ".$user->first_name." ".$user->last_name.". Роль: ".@$role['name'].PHP_EOL;
         }
         $message .= "-------------".PHP_EOL;
