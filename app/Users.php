@@ -28,4 +28,9 @@ class Users extends Model
         ->as('status')
         ->withPivot('status');
     }
+
+    public function actions()
+    {
+        return $this->hasMany('App\UserActions', 'user_id', 'id');
+    }
 }

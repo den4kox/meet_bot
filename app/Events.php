@@ -14,4 +14,8 @@ class Events extends Model
     {
         return $this->hasMany('App\Answers', 'event_id', 'id');
     }
+
+    public function group() {
+        return $this->hasMany('App\Groups', 'group_id');
+    }
 }

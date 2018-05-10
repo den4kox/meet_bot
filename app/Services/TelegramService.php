@@ -320,15 +320,27 @@ class TelegramService
 
             $group = Groups::find($data['chat']['id']);
             $users = $group->users()->where('status', 1)->get();
-            $question = Questions::where('group_id', $group->id)->first();
+            $questions = Questions::where('group_id', $group->id)->get('id');
             foreach($users as $user) {
-                $this->sendMessage($user->id, $question->text);
+                $arrayActions = $questions->map(function ($item, $key) {
+                    return [
+                        'event_id' => $event->id,
+                        'question_id' => $item,
+                    ];
+                });
+
+                $user->actions()->createMany(
+                    $arrayActions
+                );
                 
-                $answers = $user->answers()->create([
-                    'event_id' => $event->id,
-                    'question_id' => $question->id,
-                    'text' => 'Empty'
-                ]);
+                // $qmessage = $question->text.'('.$group->name.' '.$group->id.')';
+                // $this->sendMessage($user->id, $qmessage);
+                
+                // $answers = $user->answers()->create([
+                //     'event_id' => $event->id,
+                //     'question_id' => $question->id,
+                //     'text' => 'Empty'
+                // ]);
             }
         }
 
@@ -383,7 +395,11 @@ class TelegramService
     public function answerHandler($data) {
         $response = $data['text'];
         $userId = $data['from']['id'];
+
         $user = Users::find($userId);
+
+        $gpoups = $user->groups->events()->where('status', 1)->get();
+        print_r($gpoups);
         if($user->status === 0) {
             $message = "Уважаемый! сначала /addMe, а потом миттинг";
             $this->sendMessage($user->id, $message);
