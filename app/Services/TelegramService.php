@@ -469,7 +469,7 @@ class TelegramService
     }
 
     public function getGroupLink(Groups $group) {
-        return "[".$group->name."](tg://user?id=".$group->id.")";
+        return "[".$group->name."](tg://group?id=".$group->id.")";
     }
 
     public function setHook($url) {
