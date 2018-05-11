@@ -120,7 +120,7 @@ class TelegramService
     public function deleteUser($data) {
         $user = Users::find($data['left_chat_participant']['id']);
         if(!empty($user)) {
-            $fullName = $user->first_name." ".$user->last_name;
+            $fullName = $this->getLink($user);
             
             $message = "Пользователь ".$fullName." покинул нас...( Его кикнул ".$data['from']['first_name']." ".$data['from']['last_name'];
             $this->sendMessage($data['chat']['id'], $message);
@@ -134,9 +134,9 @@ class TelegramService
     public function showAll($data) {
         $lastEvent = Events::where('group_id', $data['chat']['id'])->orderBy('id', 'desc')->first();
         $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
-
+        $dayofweek = date('w', strtotime($lastEvent->created_at));
         $message = '*******************'.PHP_EOL;
-        $message .= 'Миттинг #'.$lastEvent->id.'. Дата: '.$lastEvent->created_at.PHP_EOL;
+        $message .= 'Миттинг #'.$lastEvent->id.'. '.$dayofweek.PHP_EOL;
 
         foreach($users as $user) {
             $user = Users::find($user);
