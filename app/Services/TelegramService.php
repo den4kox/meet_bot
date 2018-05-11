@@ -134,15 +134,15 @@ class TelegramService
     public function showAll($data) {
         $lastEvent = Events::where('group_id', $data['chat']['id'])->orderBy('id', 'desc')->first();
         $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
-        $dayofweek = date('w', strtotime($lastEvent->created_at));
-        $message = '*******************'.PHP_EOL;
-        $message .= 'Миттинг #'.$lastEvent->id.'. '.$dayofweek.PHP_EOL;
+        $dayofweek = date('l', strtotime($lastEvent->created_at));
+        $message = '---------------------'.PHP_EOL;
+        $message .= 'Миттинг #*'.$lastEvent->id.'*. '.$dayofweek.PHP_EOL;
 
         foreach($users as $user) {
             $user = Users::find($user);
             $message .= $this->getUserAnswerMessage($user, $lastEvent);
         }
-        $message .= '*******************'.PHP_EOL;
+        $message .= '---------------------'.PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
         return 'qwe';
     }
