@@ -336,7 +336,7 @@ class TelegramService
                 'status_id' => 1,
                 'group_id' => $data['chat']['id'],
             ]);
-            $moder = $data['from']['last_name']." ".$data['from']['first_name'];
+            $moder = $this->getLink($user);
             $message = "$moder начал Миттинг! Смотри приват!";
             $this->sendMessage($data['chat']['id'], $message);
 
