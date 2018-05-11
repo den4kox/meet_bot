@@ -110,7 +110,7 @@ class TelegramService
         $message .= "-------------".PHP_EOL;
         foreach($users as $user) {
             $role = $user->roles()->where('group_id', $group->id)->first();
-            $message .= "  [".$user->first_name." ".$user->last_name."](tg://user?id=".$user->id."). *Роль:* ".@$role['name'].PHP_EOL;
+            $message .= $this->getLink($user)." *Роль:* ".@$role['name'].PHP_EOL;
         }
         $message .= "-------------".PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message, 'Markdown');
@@ -467,6 +467,10 @@ class TelegramService
         );
 
         return $resp;
+    }
+
+    public function getLink(Users $user) {
+        return "[".$user->first_name." ".$user->last_name."](tg://user?id=".$user->id.");
     }
 
     public function setHook($url) {
