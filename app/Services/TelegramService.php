@@ -429,7 +429,7 @@ class TelegramService
         $event = Events::find($action->event_id);
         $group = $event->group;
         
-        $qmessage = $question->text.' (@'.$group->name.')';
+        $qmessage = $question->text.' ('.$this->getGroupLink($group).')';
         $this->sendMessage($user->id, $qmessage);
         
     }
