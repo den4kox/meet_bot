@@ -136,7 +136,7 @@ class TelegramService
         $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
         $dayofweek = date('l', strtotime($lastEvent->created_at));
         $message = '---------------------'.PHP_EOL;
-        $message .= '*Миттинг #'.$lastEvent->id.'*. '.$dayofweek.PHP_EOL;
+        $message .= '*Миттинг #'.$lastEvent->id.'.* '.$dayofweek.PHP_EOL;
 
         foreach($users as $user) {
             $user = Users::find($user);
@@ -150,7 +150,7 @@ class TelegramService
     public function getUserAnswerMessage(Users $user, Events $event) {
         $answers = $event->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
         $userLink = $this->getLink($user);
-        $message = '  '.$userLink.PHP_EOL;
+        $message = "\t".$userLink.PHP_EOL;
 
         foreach($answers as $key => $answer) {
             $num = $key + 1;
@@ -166,22 +166,13 @@ class TelegramService
         if(empty($user)) {
             return '';
         }
-
         $lastEvent = Events::where('group_id', $data['chat']['id'])->orderBy('id', 'desc')->first();
+        $dayofweek = date('l', strtotime($lastEvent->created_at));
         $answers = $lastEvent->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
-        $message = '*******************'.PHP_EOL;
-        $message .= 'Event #'.$lastEvent->id.'. Дата: '.$lastEvent->created_at.PHP_EOL;
-        $message .= '  '.$user->first_name.' '.$user->last_name.PHP_EOL;
-
-        foreach($answers as $key => $answer) {
-            print_r($answer);
-            $num = $key + 1;
-            $message .= "    ".$num.".) ".$answer['question']['text'].PHP_EOL;
-            $message .= "    ".$answer['text'].PHP_EOL;
-            $message .= PHP_EOL;
-        }
-        print_r($message);
-        $message .= '*******************'.PHP_EOL;
+        $message = '---------------------'.PHP_EOL;
+        $message .= '*Миттинг #'.$lastEvent->id.'.* '.$dayofweek.PHP_EOL;
+        $message .= $this->getUserAnswerMessage($user, $lastEvent);
+        $message .= '---------------------'.PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
     }
 
