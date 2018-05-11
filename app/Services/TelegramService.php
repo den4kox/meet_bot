@@ -470,7 +470,7 @@ class TelegramService
     }
 
     public function getLink(Users $user) {
-        return "[".$user->first_name." ".$user->last_name."](tg://user?id=".$user->id.");
+        return "[".$user->first_name." ".$user->last_name."](tg://user?id=".$user->id.")";
     }
 
     public function setHook($url) {
