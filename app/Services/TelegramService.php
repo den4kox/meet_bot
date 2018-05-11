@@ -429,7 +429,7 @@ class TelegramService
         $event = Events::find($action->event_id);
         $group = $event->group;
         
-        $qmessage = $question->text.' ('.$group->name.' '.$group->id.')';
+        $qmessage = $question->text.' ('.$this->getGroupLink($group).')';
         $this->sendMessage($user->id, $qmessage);
         
     }
@@ -466,6 +466,10 @@ class TelegramService
 
     public function getLink(Users $user) {
         return "[".$user->first_name." ".$user->last_name."](tg://user?id=".$user->id.")";
+    }
+
+    public function getGroupLink(Groups $group) {
+        return "[".$user->name."](tg://user?id=".$group->id.")";
     }
 
     public function setHook($url) {
