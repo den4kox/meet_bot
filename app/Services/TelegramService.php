@@ -155,7 +155,7 @@ class TelegramService
         foreach($answers as $key => $answer) {
             $num = $key + 1;
             $message .= "    ".$num.".) *".$answer['question']['text']."*".PHP_EOL;
-            $message .= "    _".$answer['text']."_".PHP_EOL;
+            $message .= "\t    _".$answer['text']."_".PHP_EOL;
             $message .= PHP_EOL;
         }
         return $message;
