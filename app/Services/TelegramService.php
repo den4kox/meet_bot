@@ -182,7 +182,7 @@ class TelegramService
         $message = 'Вопросы:'.PHP_EOL.PHP_EOL;
         $message .= '--------'.PHP_EOL;
         foreach($questions as $question) {
-            $message .= "id=".$question->id.". Text: ".$question->text.PHP_EOL;
+            $message .= "_".$question->text."_ (*".$question->id."*)".PHP_EOL;
         }
         $message .= '--------'.PHP_EOL;
         $this->sendMessage($chatId, $message);
@@ -204,13 +204,13 @@ class TelegramService
                 print_r($q);
                 $q->text = $id_text[1];
                 $q->save();
-                $this->sendMessage($chatId, "Вопрос c id ".$id_text[0]." изменен!");
+                $this->sendMessage($chatId, "Вопрос c id *".$id_text[0]."* изменен!");
                 return 'ok';
             }
-            $this->sendMessage($chatId, "Вопрос c id ".$values[1]." не найден!");
+            $this->sendMessage($chatId, "Вопрос c id *".$values[1]."* не найден!");
             return 'quetion not found';
         }
-        $this->sendMessage($chatId, "Команда должна иметь вид: /command text");
+        $this->sendMessage($chatId, "Команда должна иметь вид: */command* _text_");
         return 'error';
     }
     public function addQuestion($data) {
@@ -231,7 +231,7 @@ class TelegramService
             $this->sendMessage($chatId, "Вопрос Добавлен! /showquestions - чтобы посотреть все вопросы.");
             return 'ok';
         }
-        $this->sendMessage($chatId, "Команда должна иметь вид: /command text");
+        $this->sendMessage($chatId, "Команда должна иметь вид: */command* _text_");
         return 'error';
         
     }
@@ -249,13 +249,13 @@ class TelegramService
             $q = Questions::where('group_id', $chatId)->where('id', $values[1])->first();
             if(!empty($q)) {
                 $q->delete();
-                $this->sendMessage($chatId, "Вопрос c id ".$values[1]." удален!");
+                $this->sendMessage($chatId, "Вопрос c id *".$values[1]."* удален!");
                 return 'ok';
             }
-            $this->sendMessage($chatId, "Вопрос c id ".$values[1]." не найден!");
+            $this->sendMessage($chatId, "Вопрос c id *".$values[1]."* не найден!");
             return 'question not found';
         }
-        $this->sendMessage($chatId, "Команда должна иметь вид: /command text");
+        $this->sendMessage($chatId, "Команда должна иметь вид: */command* _text_");
         return 'error';
     }
 
@@ -272,11 +272,11 @@ class TelegramService
         if($newuser->groups()->where('group_id', $chat['id'])->where('status', 1)->count() === 0) {
             $newuser->roles()->syncWithoutDetaching([3 => ['group_id' => $chat['id']]]);
             $newuser->groups()->syncWithoutDetaching([$chat['id'] => ['status' => 1]]);
-            $message = "Новый участник миттинга: ".$newuser->first_name." ".$newuser->last_name.PHP_EOL;;
-            $message .= "Напиши приватное сообщение(@shoxel_meeting_bot), чтобы я мог задавать тебе вопросы.";
+            $message = "Новый участник миттинга: ".$this->getLink($newuser).PHP_EOL;;
+            $message .= "Напиши приватное сообщение(@shoxel\_meeting\_bot), чтобы я мог задавать тебе вопросы.";
             
         } else {
-            $message = $newuser->first_name." ".$newuser->last_name.", полегче! Ты уже участник митинга";
+            $message = $this->getLink($newuser).", полегче! Ты уже участник митинга";
         }
         
         $this->sendMessage($chat['id'], $message);
