@@ -110,10 +110,10 @@ class TelegramService
         $message .= "-------------".PHP_EOL;
         foreach($users as $user) {
             $role = $user->roles()->where('group_id', $group->id)->first();
-            $message .= "  ".$user->first_name." ".$user->last_name.". Роль: ".@$role['name'].PHP_EOL;
+            $message .= "  [".$user->first_name." ".$user->last_name."](tg://user?id=".$user->id."). *Роль:* ".@$role['name'].PHP_EOL;
         }
         $message .= "-------------".PHP_EOL;
-        $this->sendMessage($data['chat']['id'], $message);
+        $this->sendMessage($data['chat']['id'], $message, 'Markdown');
         return 'ok';
     }
 
@@ -455,9 +455,15 @@ class TelegramService
         return false;
     }
 
-    public function sendMessage($chatId, $messahe) {
+    public function sendMessage($chatId, $messahe, $parseMode='Markdown') {
         $resp = $this->client->post('sendMessage',
-             ['query' => ['chat_id' => $chatId,'text' => $messahe]] 
+             [
+                 'query' => [
+                    'chat_id' => $chatId,
+                    'text' => $messahe,
+                    'parse_mode' => $parseMode
+                 ]
+            ] 
         );
 
         return $resp;
