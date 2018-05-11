@@ -288,32 +288,37 @@ class TelegramService
         $user = Users::find($data['id']);
         if($user) {
             $user->groups()->syncWithoutDetaching([$chat['id'] => ['status' => 0]]);
-            $message = $user->first_name." ".$user->last_name." отказался от миттингов!";
+            $message = $this->getLink($user)." отказался от миттингов!";
             $this->sendMessage($chat['id'], $message);
         }
         return 'DELET';
     }
 
     public function stopMeeting($data) {
-        $events = Events::where('group_id', $data['chat']['id'])->where('status_id', 1)->get();
-        $from = $data['from'];
-        $chatId= $data['chat']['id'];
-        if($events->count() > 0) {
-            foreach($events as $event) {
-                $event->userActions()->delete();
-                $event->status_id = 2;
-                $event->save();
+        $user = Users::find($data['from']['id']);
+        if($this->chechIsModerator($user, $data['chat']['id'])) {
+            $events = Events::where('group_id', $data['chat']['id'])->where('status_id', 1)->get();
+            $chatId= $data['chat']['id'];
+            if($events->count() > 0) {
+                foreach($events as $event) {
+                    $event->userActions()->delete();
+                    $event->status_id = 2;
+                    $event->save();
+                }
+                $message = $this->getLink($user).' окончил миттинг. Результат:';
+                $this->sendMessage($chatId, $message);
+                $this->showAll($data);
+            } else {
+                $message = 'Активных митингов нету!';
+                $this->sendMessage($chatId, $message);
             }
-            $message = $from['first_name']." ".$from['last_name'].' окончил миттинг. Результат:';
-            $this->sendMessage($chatId, $message);
-            $this->showAll($data);
-        } else {
-            $message = 'Активных митингов нету!';
-            $this->sendMessage($chatId, $message);
+            return 'ok';
         }
         
+        $message = "У вас недостаточно прав!";
+        $this->sendMessage($data['chat']['id'], $message); 
         
-        return 'ok';
+        return 'permission';
     } 
 
     function startMeeting($data) {
