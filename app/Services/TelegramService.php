@@ -136,7 +136,7 @@ class TelegramService
         $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
         $dayofweek = date('l', strtotime($lastEvent->created_at));
         $message = '---------------------'.PHP_EOL;
-        $message .= 'Миттинг #*'.$lastEvent->id.'*. '.$dayofweek.PHP_EOL;
+        $message .= '*Миттинг #'.$lastEvent->id.'*. '.$dayofweek.PHP_EOL;
 
         foreach($users as $user) {
             $user = Users::find($user);
@@ -149,14 +149,13 @@ class TelegramService
 
     public function getUserAnswerMessage(Users $user, Events $event) {
         $answers = $event->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
-
-        $message = '  '.$user->first_name.' '.$user->last_name.PHP_EOL;
+        $userLink = $this->getLink($user);
+        $message = '  '.$userLink.PHP_EOL;
 
         foreach($answers as $key => $answer) {
-            print_r($answer);
             $num = $key + 1;
-            $message .= "    ".$num.".) ".$answer['question']['text'].PHP_EOL;
-            $message .= "    ".$answer['text'].PHP_EOL;
+            $message .= "    ".$num.".) *".$answer['question']['text']."*".PHP_EOL;
+            $message .= "    _".$answer['text']."_".PHP_EOL;
             $message .= PHP_EOL;
         }
         return $message;
