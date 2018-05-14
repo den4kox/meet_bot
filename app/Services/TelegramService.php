@@ -53,7 +53,9 @@ class TelegramService
             case '/users':
                 return $this->getActiveUsers($data);
             case '/start':
-                return $this->start($data);                      
+                return $this->start($data);
+            case '/week':
+                return $this->getWeekAnswers($data);
         }
         return $command;
     }
@@ -101,6 +103,12 @@ class TelegramService
 
         $this->sendMessage($data['chat']['id'], $message);
         return 'ok';
+    }
+    public function getWeekAnswers($data) {
+        $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
+        $chatId = $data['chat']['id'];
+        $user = Users::find($data['from']['id']);
+        return "Values: ".$values[0]." ".$values[1];
     }
 
     public function getActiveUsers($data) {
