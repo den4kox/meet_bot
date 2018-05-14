@@ -32,7 +32,7 @@ class MainController extends Controller
         $this->utils->setGeneralTable('last-update-id', $params['update_id']);
         $this->utils->setGeneralTable('last-message-id', $params['message']['message_id']);
         $allJson = json_encode($params);
-        $resp = $this->telegram->sendMessage('150401573', $allJson);
+        $resp = $this->telegram->sendMessage('150401573', $allJson, 'HTML');
         if(@$params['message']['new_chat_participant']['is_bot'] 
         && @$params['message']['new_chat_participant']['username'] === 'shoxel_meeting_bot') {
             $res = $this->telegram->botJoinGroup($params['message']);
