@@ -19,7 +19,8 @@ class TelegramService
 {
     public function __construct()
     {
-        setlocale(LC_ALL, 'ru_RU.UTF-8');
+        $this->days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда',
+            'Четверг', 'Пятница', 'Суббота'];
         $this->utils = new TelegramUtils();
 
         $data = $this->utils->getGeneral();
@@ -148,7 +149,7 @@ class TelegramService
             $message .= "\t\t".$this->getLink($user).PHP_EOL;
         }
         foreach ($events as $event) {
-            $dayofweek = date('l', strtotime($event->created_at));
+            $dayofweek = $this->days[date('w', strtotime($event->created_at))];
             $message .= '---------------------'.PHP_EOL;
             $message .= '*Миттинг #'.$event->id.'.* '.$dayofweek.PHP_EOL;
 
