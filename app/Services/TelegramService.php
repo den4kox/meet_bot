@@ -141,7 +141,7 @@ class TelegramService
         ])->get();
 
         $users = Users::whereIn('id', $userIds)->get();
-        $message = 'Отчет за текущую неделю: *'.$start.' - '.$stop.'*'.PHP_EOL;
+        $message = 'Отчет за текущую неделю: *'.$start->format('d/m/Y').' - '.$stop->format('d/m/Y').'*'.PHP_EOL;
 
         $message .= "\tПользователи:".PHP_EOL;
         foreach ($users as $user) {
