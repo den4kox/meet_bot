@@ -132,19 +132,26 @@ class TelegramService
         }
 
         $group = Groups::find($chatId);
-
+        $start = Carbon::parse('last monday')->startOfDay();
+        $stop = Carbon::parse('next friday')->endOfDay();
         $events = $group->events()->whereBetween('created_at', [
-            Carbon::parse('last monday')->startOfDay(),
-            Carbon::parse('next friday')->endOfDay(),
+            $start,
+            $stop,
         ])->get();
 
+        $users = Users::whereIn('id', $userIds)->get();
+        $message = 'Отчет за текущую неделю: *'.$start.' - '.$stop.'*'.PHP_EOL;
+
+        $message .= "\tПользователи:".PHP_EOL;
+        foreach ($users as $user) {
+            $message .= "\t\t".$this->getLink($user).PHP_EOL;
+        }
         foreach ($events as $event) {
             $dayofweek = date('l', strtotime($event->created_at));
-            $message = '---------------------'.PHP_EOL;
+            $message .= '---------------------'.PHP_EOL;
             $message .= '*Миттинг #'.$event->id.'.* '.$dayofweek.PHP_EOL;
 
-            foreach($userIds as $user) {
-                $user = Users::where('user');
+            foreach($users as $user) {
                 $message .= $this->getUserAnswerMessage($user, $event);
             }
             $message .= '---------------------'.PHP_EOL;
