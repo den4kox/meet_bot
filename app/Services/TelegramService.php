@@ -37,7 +37,7 @@ class TelegramService
 
         switch($query) {
             case 'week':
-                $this->sendInline($id, ['One', 'Two']);
+                $this->sendInline($id, json_encode(['One', 'Two']));
         }
     }
 
