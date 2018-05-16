@@ -142,23 +142,27 @@ class TelegramService
         ])->get();
 
         $users = Users::whereIn('id', $userIds)->get();
-        $message = 'Отчет за текущую неделю: *'.$start->format('d/m/Y').' - '.$stop->format('d/m/Y').'*'.PHP_EOL;
+        $message = '*=====================*'.PHP_EOL;
+        $message .= 'Отчет за текущую неделю: *'.$start->format('d/m/Y').' - '.$stop->format('d/m/Y').'*'.PHP_EOL;
 
         $message .= "\tПользователи:".PHP_EOL;
         foreach ($users as $user) {
             $message .= "\t\t".$this->getLink($user).PHP_EOL;
         }
+
+        $message .= PHP_EOL;
         foreach ($events as $event) {
             $dayofweek = $this->days[date('w', strtotime($event->created_at))];
             $message .= '---------------------'.PHP_EOL;
-            $message .= '*Миттинг #'.$event->id.'.* '.$dayofweek.PHP_EOL;
+            $message .= '*Миттинг за '.$dayofweek."*".PHP_EOL;
 
             foreach($users as $user) {
                 $message .= $this->getUserAnswerMessage($user, $event);
             }
             $message .= '---------------------'.PHP_EOL;
-            $this->sendMessage($data['chat']['id'], $message);
         }
+        $message .= '*=====================*'.PHP_EOL;
+        $this->sendMessage($data['chat']['id'], $message);
         return 'ok';
     }
 
@@ -199,9 +203,9 @@ class TelegramService
     public function showAll($data) {
         $lastEvent = Events::where('group_id', $data['chat']['id'])->orderBy('id', 'desc')->first();
         $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
-        $dayofweek = date('l', strtotime($lastEvent->created_at));
+        $dayofweek = $this->days[date('w', strtotime($lastEvent->created_at))];
         $message = '---------------------'.PHP_EOL;
-        $message .= '*Миттинг #'.$lastEvent->id.'.* '.$dayofweek.PHP_EOL;
+        $message .= '*Миттинг за '.$dayofweek.'*'.PHP_EOL;
 
         foreach($users as $user) {
             $user = Users::find($user);
@@ -217,7 +221,7 @@ class TelegramService
         $userLink = $this->getLink($user);
         $message = "\t".$userLink.PHP_EOL;
         if(count($answers) === 0) {
-            return "*Ответы отсутствуют!*";
+            return "*Ответы отсутствуют!*".PHP_EOL;
         }
         foreach($answers as $key => $answer) {
             $num = $key + 1;
@@ -235,10 +239,10 @@ class TelegramService
             return '';
         }
         $lastEvent = Events::where('group_id', $data['chat']['id'])->orderBy('id', 'desc')->first();
-        $dayofweek = date('l', strtotime($lastEvent->created_at));
+        $dayofweek = $this->days[date('w', strtotime($lastEvent->created_at))];
         $answers = $lastEvent->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
         $message = '---------------------'.PHP_EOL;
-        $message .= '*Миттинг #'.$lastEvent->id.'.* '.$dayofweek.PHP_EOL;
+        $message .= '*Миттинг за '.$dayofweek."*".PHP_EOL;
         $message .= $this->getUserAnswerMessage($user, $lastEvent);
         $message .= '---------------------'.PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
