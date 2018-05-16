@@ -30,45 +30,44 @@ class MainController extends Controller
     public function handler(Request $request, $salt) {
         $params = $request->all();
         $this->utils->setGeneralTable('last-update-id', $params['update_id']);
-        $this->utils->setGeneralTable('last-message-id', $params['message']['message_id']);
-        $allJson = json_encode($params);
-        $resp = $this->telegram->sendMessage('150401573', $allJson, 'HTML');
+        //$this->utils->setGeneralTable('last-message-id', $params['message']['message_id']);
+        //$allJson = json_encode($params);
+        //$resp = $this->telegram->sendMessage('150401573', $allJson, 'HTML');
         if(@$params['message']['new_chat_participant']['is_bot'] 
         && @$params['message']['new_chat_participant']['username'] === 'shoxel_meeting_bot') {
             $res = $this->telegram->botJoinGroup($params['message']);
-            $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
+            //$resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
             return $res;
         }
 
         if(@$params['message']['left_chat_participant']['is_bot']
         && @$params['message']['left_chat_participant']['username'] === 'shoxel_meeting_bot') {
             $res = $this->telegram->deleteGroup($params['message']);
-            $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
+           // $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
             return $res;
         }
 
         if(@$params['message']['left_chat_participant']) {
             $res = $this->telegram->deleteUser($params['message']);
-            $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
+           // $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
             return $res;
         }
 
         
         if(@$params['message']['entities'][0]['type'] === 'bot_command') {
             $res = $this->telegram->commandHandler($params['message']);
-            $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
+            //$resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
             return $res;
         }
 
         if(@$params['message']['chat']['type'] === 'private') {
             $res = $this->telegram->answerHandler($params['message']);
-            $resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
+            //$resp = $this->telegram->sendMessage('150401573', json_encode(['command' => $res]), 'HTML');
             return $res;
         }
         
-        $statusCode = $resp->getStatusCode();
-        $body = $resp->getBody();
-
-        return response()->json(['origin' => @$_SERVER['SERVER_NAME'], 'status' => $statusCode, 'body' => $body, 'params' => $allJson]);
+       // $statusCode = $resp->getStatusCode();
+       // $body = $resp->getBody();
+        return '';
     }
 }

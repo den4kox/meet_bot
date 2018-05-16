@@ -111,9 +111,7 @@ class TelegramService
         return 'ok';
     }
     public function getWeekAnswers($data) {
-        $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $chatId = $data['chat']['id'];
-        $user = Users::find($data['from']['id']);
 
         $userIds = [];
         // print_r($values);
