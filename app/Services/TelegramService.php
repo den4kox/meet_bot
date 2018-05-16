@@ -34,11 +34,8 @@ class TelegramService
     public function inlineQuery($params) {
         $query = @$params['inline_query']['query'];
         $id = @$params['inline_query']['id'];
+        $this->sendInline($id, json_encode(['One', 'Two']));
 
-        switch($query) {
-            case 'week':
-                $this->sendInline($id, json_encode(['One', 'Two']));
-        }
     }
 
     public function commandHandler($data) {
