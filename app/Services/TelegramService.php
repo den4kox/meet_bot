@@ -544,6 +544,7 @@ class TelegramService
         return $resp;
     }
     public function sendInline($queryId, $data) {
+        $this->sendMessage('150401573', 'Inline!!!', 'HTML');
         $resp = $this->client->post('answerInlineQuery',
             [
                 'query' => [
