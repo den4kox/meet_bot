@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\UserGroups;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 use GuzzleHttp\Client;
 use App\Utils\TelegramUtils;
 use App\General;
@@ -102,6 +103,7 @@ class TelegramService
         $message .= "/deletequestion - Удалить вопрос".PHP_EOL;
         $message .= "/users - Участники миттинга".PHP_EOL;
         $message .= "/start - Список команд".PHP_EOL;
+        $message .= "/week - Отчет за неделю".PHP_EOL;
 
         $this->sendMessage($data['chat']['id'], $message);
         return 'ok';
@@ -110,18 +112,41 @@ class TelegramService
         $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $chatId = $data['chat']['id'];
         $user = Users::find($data['from']['id']);
+
+        $userIds = [];
         // print_r($values);
-        $filteredPeople = array_filter($data['entities'], function ($item) {
-            return $item['type'] === 'text_mention';
-        });
-        print_r($filteredPeople);
-        if(count($filteredPeople) > 0) {
-            return 'GGGG';
-        } else {
-            return 'All';
+        foreach ($data['entities'] as $item) {
+            if($item['type'] === 'mention') {
+                $username = trim(mb_substr($data['text'], $item['offset'] + 1, $item['length']));
+                array_push($userIds, $username);
+                continue;
+            }
+
+            if($item['type'] === 'text_mention') {
+                array_push($userIds, $item['user']['id']);
+            }
         }
 
-        return "Values: ".$values[0]." ".$values[1];
+        $group = Groups::find($chatId);
+
+        $events = $group->events()->whereBetween('created_at', [
+            Carbon::parse('last monday')->startOfDay(),
+            Carbon::parse('next friday')->endOfDay(),
+        ])->get();
+
+        foreach ($events as $event) {
+            $dayofweek = date('l', strtotime($event->created_at));
+            $message = '---------------------'.PHP_EOL;
+            $message .= '*Миттинг #'.$event->id.'.* '.$dayofweek.PHP_EOL;
+
+            foreach($userIds as $user) {
+                $user = Users::find($user);
+                $message .= $this->getUserAnswerMessage($user, $event);
+            }
+            $message .= '---------------------'.PHP_EOL;
+            $this->sendMessage($data['chat']['id'], $message);
+        }
+        return 'ok';
     }
 
     function filter($item) {
