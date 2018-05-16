@@ -31,6 +31,16 @@ class TelegramService
         $this->client = new Client( array( 'base_uri' => $this->url ) );    
     }
 
+    public function inlineQuery($params) {
+        $query = @$params['inline_query']['query'];
+        $id = @$params['inline_query']['id'];
+
+        switch($query) {
+            case 'week':
+                $this->sendInline($id, ['One', 'Two']);
+        }
+    }
+
     public function commandHandler($data) {
         $cm = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length'])[0];
         $command = explode("@", $cm)[0];
@@ -529,6 +539,18 @@ class TelegramService
                     'parse_mode' => $parseMode
                  ]
             ] 
+        );
+
+        return $resp;
+    }
+    public function sendInline($queryId, $data) {
+        $resp = $this->client->post('answerInlineQuery',
+            [
+                'query' => [
+                    'inline_query_id' => $queryId,
+                    'result' => $data,
+                ]
+            ]
         );
 
         return $resp;
