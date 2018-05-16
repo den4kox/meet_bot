@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\UserGroups;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 use App\Utils\TelegramUtils;
@@ -10,6 +11,7 @@ use App\Users;
 use App\Events;
 use App\Questions;
 use App\Answers;
+use App\Roles;
 use App\Groups;
 use App\QuestionsDefault;
 class TelegramService
@@ -132,9 +134,10 @@ class TelegramService
         $message = "Список участников миттинга:".PHP_EOL;
         $message .= "-------------".PHP_EOL;
         foreach($users as $user) {
-            $role = $user->groups()->where('group_id', $group->id)->first();
-            print_r($role);
-            $message .= $this->getLink($user)." *Роль:* ".@$role['name'].PHP_EOL;
+            $role = Roles::find($user->info->role_id);
+
+            print_r($user->toArray());
+            $message .= $this->getLink($user)." *Роль:* ".$role->name.PHP_EOL;
         }
         $message .= "-------------".PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message, 'Markdown');
@@ -288,17 +291,10 @@ class TelegramService
         $message = "";
         $username = $user['username'] ?? $user['id'];
         if(empty($newuser)) {
-            $newuser = Users::create(
+            Users::create(
                 [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'username' => $username]
             );
             $newuser=Users::find($user['id']);
-        }
-
-        if($newuser) {
-            $newuser->username = $username;
-            $newuser->last_name = $user['last_name'];
-            $newuser->first_name = $user['first_name'];
-            $newuser->save();
         }
         
         if($newuser->groups()->where('group_id', $chat['id'])->where('status', 1)->count() === 0) {

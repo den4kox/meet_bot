@@ -22,7 +22,7 @@ class Groups extends Model
 
     public function users() {
         return $this->belongsToMany('App\Users', 'user_groups', 'group_id', 'user_id')
-        ->as('status')
-        ->withPivot('status');
+        ->as('info')
+        ->withPivot('status', 'role_id');
     }
 }
