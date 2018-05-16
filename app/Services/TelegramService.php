@@ -221,7 +221,7 @@ class TelegramService
         $userLink = $this->getLink($user);
         $message = "\t".$userLink.PHP_EOL;
         if(count($answers) === 0) {
-            return "*Ответы отсутствуют!*".PHP_EOL;
+            $message .= "\t\t*Ответы отсутствуют!*".PHP_EOL;
         }
         foreach($answers as $key => $answer) {
             $num = $key + 1;
