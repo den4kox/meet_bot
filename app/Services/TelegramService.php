@@ -19,6 +19,7 @@ class TelegramService
 {
     public function __construct()
     {
+        setlocale(LC_ALL, 'ru_RU.UTF-8');
         $this->utils = new TelegramUtils();
 
         $data = $this->utils->getGeneral();
