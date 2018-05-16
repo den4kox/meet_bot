@@ -285,16 +285,16 @@ class TelegramService
     public function addMe($user, $chat) {
         $newuser = Users::find($user['id']);
         $message = "";
-        $nickname = $user['nickname'] ?? $user['id'];
+        $username = $user['username'] ?? $user['id'];
         if(empty($newuser)) {
             $newuser = Users::create(
-                [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'nickname' => $nickname]
+                [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'username' => $username]
             );
             $newuser=Users::find($user['id']);
         }
 
         if($newuser) {
-            $newuser->nickname = $nickname;
+            $newuser->username = $username;
             $newuser->last_name = $user['last_name'];
             $newuser->first_name = $user['first_name'];
             $newuser->save();
