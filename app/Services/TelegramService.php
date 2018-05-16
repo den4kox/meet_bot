@@ -216,13 +216,16 @@ class TelegramService
         $answers = $event->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
         $userLink = $this->getLink($user);
         $message = "\t".$userLink.PHP_EOL;
-
+        if(count($answers) === 0) {
+            return "*Ответы отсутствуют!*";
+        }
         foreach($answers as $key => $answer) {
             $num = $key + 1;
             $message .= "\t".$num.".) *".$answer['question']['text']."*".PHP_EOL;
             $message .= "\t\t    _".$answer['text']."_".PHP_EOL;
             $message .= PHP_EOL;
         }
+
         return $message;
     }
 
