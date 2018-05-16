@@ -108,8 +108,23 @@ class TelegramService
         $values = $this->utils->getTextFromCommand($data['text'], $data['entities'][0]['length']);
         $chatId = $data['chat']['id'];
         $user = Users::find($data['from']['id']);
+        // print_r($values);
+        $filteredPeople = array_filter($data['entities'], function ($item) {
+            return $item['type'] === 'text_mention';
+        });
+        print_r($filteredPeople);
+        if(count($filteredPeople) > 0) {
+            return 'GGGG';
+        } else {
+            return 'All';
+        }
+
         return "Values: ".$values[0]." ".$values[1];
     }
+
+    function filter($item) {
+        return $item['type'] === 'text_mention';
+    }  
 
     public function getActiveUsers($data) {
         $group = Groups::find($data['chat']['id']);
@@ -270,11 +285,19 @@ class TelegramService
     public function addMe($user, $chat) {
         $newuser = Users::find($user['id']);
         $message = "";
+        $nickname = $user['nickname'] ?? $user['id'];
         if(empty($newuser)) {
             $newuser = Users::create(
-                [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name']]
+                [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'nickname' => $nickname]
             );
             $newuser=Users::find($user['id']);
+        }
+
+        if($newuser) {
+            $newuser->nickname = $nickname;
+            $newuser->last_name = $user['last_name'];
+            $newuser->first_name = $user['first_name'];
+            $newuser->save();
         }
         
         if($newuser->groups()->where('group_id', $chat['id'])->where('status', 1)->count() === 0) {
