@@ -118,7 +118,11 @@ class TelegramService
         foreach ($data['entities'] as $item) {
             if($item['type'] === 'mention') {
                 $username = trim(mb_substr($data['text'], $item['offset'] + 1, $item['length']));
-                array_push($userIds, $username);
+                $tempUser = Users::where('username', $username)->first();
+                if($tempUser) {
+                    array_push($userIds, $tempUser->id);
+                }
+
                 continue;
             }
 
@@ -140,7 +144,7 @@ class TelegramService
             $message .= '*Миттинг #'.$event->id.'.* '.$dayofweek.PHP_EOL;
 
             foreach($userIds as $user) {
-                $user = Users::find($user);
+                $user = Users::where('user');
                 $message .= $this->getUserAnswerMessage($user, $event);
             }
             $message .= '---------------------'.PHP_EOL;
