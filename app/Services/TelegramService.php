@@ -132,7 +132,8 @@ class TelegramService
         $message = "Список участников миттинга:".PHP_EOL;
         $message .= "-------------".PHP_EOL;
         foreach($users as $user) {
-            $role = $user->roles()->where('group_id', $group->id)->first();
+            $role = $user->groups()->where('group_id', $group->id)->first();
+            print_r($role);
             $message .= $this->getLink($user)." *Роль:* ".@$role['name'].PHP_EOL;
         }
         $message .= "-------------".PHP_EOL;
@@ -301,8 +302,7 @@ class TelegramService
         }
         
         if($newuser->groups()->where('group_id', $chat['id'])->where('status', 1)->count() === 0) {
-            $newuser->roles()->syncWithoutDetaching([3 => ['group_id' => $chat['id']]]);
-            $newuser->groups()->syncWithoutDetaching([$chat['id'] => ['status' => 1]]);
+            $newuser->groups()->syncWithoutDetaching([$chat['id'] => ['status' => 1, 'role_id' => 3]]);
             $message = "Новый участник миттинга: ".$this->getLink($newuser).PHP_EOL;;
             $message .= "Напиши приватное сообщение(@shoxel\_meeting\_bot), чтобы я мог задавать тебе вопросы.";
             
@@ -468,7 +468,7 @@ class TelegramService
     public function chechIsModerator(Users $user, $groupId) {
         if($user) {
             $isAdmin = $user
-                ->roles()
+                ->groups()
                 ->where('role_id', '<', 3)
                 ->where('group_id', $groupId)
                 ->count();
