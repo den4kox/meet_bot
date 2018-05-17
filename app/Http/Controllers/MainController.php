@@ -29,7 +29,7 @@ class MainController extends Controller
 
     public function handler(Request $request, $salt) {
         $params = $request->all();
-        $this->utils->setGeneralTable('last-update-id', $params['update_id']);
+        // $this->utils->setGeneralTable('last-update-id', $params['update_id']);
         //$this->utils->setGeneralTable('last-message-id', $params['message']['message_id']);
         //$allJson = json_encode($params);
         //$this->telegram->sendMessage('150401573', $allJson, 'HTML');
