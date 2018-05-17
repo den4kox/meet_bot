@@ -342,7 +342,7 @@ class TelegramService
         $username = $user['username'] ?? $user['id'];
         if(empty($newuser)) {
             Users::create(
-                [ 'id' => $user['id'], 'last_name' => $user['last_name'], 'first_name' => $user['first_name'], 'username' => $username]
+                [ 'id' => @$user['id'], 'last_name' => @$user['last_name'], 'first_name' => @$user['first_name'], 'username' => @$username]
             );
             $newuser=Users::find($user['id']);
         }
