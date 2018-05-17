@@ -145,8 +145,12 @@ class TelegramService
             $start,
             $stop,
         ])->get();
+        if(count($userIds) > 0) {
+            $users = Users::whereIn('id', $userIds)->get();
+        } else {
+            $users = $group->users;
+        }
 
-        $users = Users::whereIn('id', $userIds)->get();
         $message = '*=====================*'.PHP_EOL;
         $message .= 'Отчет за текущую неделю: *'.$start->format('d/m/Y').' - '.$stop->format('d/m/Y').'*'.PHP_EOL;
 
