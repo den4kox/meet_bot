@@ -16,11 +16,12 @@ use App\Roles;
 use App\Groups;
 use App\QuestionsDefault;
 
-$dateFormat = 'd/m/Y';
+
 class TelegramService
 {
     public function __construct()
     {
+        $this->dateFormat = 'd/m/Y';
         $this->days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда',
             'Четверг', 'Пятница', 'Суббота'];
         $this->utils = new TelegramUtils();
@@ -154,7 +155,7 @@ class TelegramService
         }
 
         $message = '*=====================*'.PHP_EOL;
-        $message .= 'Отчет за текущую неделю: *'.$start->format($dateFormat).' - '.$stop->format($dateFormat).'*'.PHP_EOL;
+        $message .= 'Отчет за текущую неделю: *'.$start->format($this->dateFormat).' - '.$stop->format($this->dateFormat).'*'.PHP_EOL;
 
         $message .= "\tОтчет для Пользователей:".PHP_EOL;
         $message .= '---------------------'.PHP_EOL;
