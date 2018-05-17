@@ -154,21 +154,24 @@ class TelegramService
         $message = '*=====================*'.PHP_EOL;
         $message .= 'Отчет за текущую неделю: *'.$start->format('d/m/Y').' - '.$stop->format('d/m/Y').'*'.PHP_EOL;
 
-        $message .= "\tПользователи:".PHP_EOL;
+        $message .= "\tОтчет для Пользователей:".PHP_EOL;
+        $message .= PHP_EOL;
+        $message .= '---------------------'.PHP_EOL;
         foreach ($users as $user) {
             $message .= "\t\t".$this->getLink($user).PHP_EOL;
         }
+        $message .= '---------------------'.PHP_EOL;
 
         $message .= PHP_EOL;
         foreach ($events as $event) {
             $dayofweek = $this->days[date('w', strtotime($event->created_at))];
-            $message .= '---------------------'.PHP_EOL;
+            $message .= PHP_EOL;
             $message .= '*Миттинг за '.$dayofweek."*".PHP_EOL;
 
             foreach($users as $user) {
                 $message .= $this->getUserAnswerMessage($user, $event);
             }
-            $message .= '---------------------'.PHP_EOL;
+            $message .= PHP_EOL;
         }
         $message .= '*=====================*'.PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
