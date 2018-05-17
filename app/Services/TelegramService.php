@@ -15,6 +15,8 @@ use App\Answers;
 use App\Roles;
 use App\Groups;
 use App\QuestionsDefault;
+
+$dateFormat = 'd/m/Y';
 class TelegramService
 {
     public function __construct()
@@ -152,7 +154,7 @@ class TelegramService
         }
 
         $message = '*=====================*'.PHP_EOL;
-        $message .= 'Отчет за текущую неделю: *'.$start->format('d/m/Y').' - '.$stop->format('d/m/Y').'*'.PHP_EOL;
+        $message .= 'Отчет за текущую неделю: *'.$start->format($dateFormat).' - '.$stop->format($dateFormat).'*'.PHP_EOL;
 
         $message .= "\tОтчет для Пользователей:".PHP_EOL;
         $message .= '---------------------'.PHP_EOL;
@@ -164,7 +166,7 @@ class TelegramService
         $message .= PHP_EOL;
         foreach ($events as $event) {
             $dayofweek = $this->days[date('w', strtotime($event->created_at))];
-            $message .= '*Миттинг за '.$dayofweek."*".PHP_EOL;
+            $message .= '*Миттинг #'.$dayofweek."*".PHP_EOL;
 
             foreach($users as $user) {
                 $message .= $this->getUserAnswerMessage($user, $event);
@@ -215,7 +217,7 @@ class TelegramService
         $users = $lastEvent->answers()->distinct('user_id')->pluck('user_id');
         $dayofweek = $this->days[date('w', strtotime($lastEvent->created_at))];
         $message = '---------------------'.PHP_EOL;
-        $message .= '*Миттинг за '.$dayofweek.'*'.PHP_EOL;
+        $message .= '*Миттинг #'.$dayofweek.'*'.PHP_EOL;
 
         foreach($users as $user) {
             $user = Users::find($user);
@@ -231,7 +233,7 @@ class TelegramService
         $userLink = $this->getLink($user);
         $message = "\t\t".$userLink.PHP_EOL;
         if(count($answers) === 0) {
-            $message .= "\t\t*Ответы отсутствуют!*".PHP_EOL;
+            $message .= "\t\t\t*Ответы отсутствуют!*".PHP_EOL;
         }
         foreach($answers as $key => $answer) {
             $num = $key + 1;
@@ -251,7 +253,7 @@ class TelegramService
         $dayofweek = $this->days[date('w', strtotime($lastEvent->created_at))];
         $answers = $lastEvent->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
         $message = '---------------------'.PHP_EOL;
-        $message .= '*Миттинг за '.$dayofweek."*".PHP_EOL;
+        $message .= '*Миттинг #'.$dayofweek."*".PHP_EOL;
         $message .= $this->getUserAnswerMessage($user, $lastEvent);
         $message .= '---------------------'.PHP_EOL;
         $this->sendMessage($data['chat']['id'], $message);
