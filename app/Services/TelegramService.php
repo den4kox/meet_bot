@@ -21,7 +21,7 @@ class TelegramService
 {
     public function __construct()
     {
-        $this->dateFormat = 'd/m/Y';
+        $this->dateFormat = 'd-m-Y';
         $this->days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда',
             'Четверг', 'Пятница', 'Суббота'];
         $this->utils = new TelegramUtils();
