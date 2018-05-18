@@ -164,7 +164,6 @@ class TelegramService
         }
         $message .= '---------------------'.PHP_EOL;
 
-        $message .= PHP_EOL;
         foreach ($events as $event) {
             $dayofweek = $this->days[date('w', strtotime($event->created_at))];
             $message .= '*Миттинг #'.$dayofweek."*".PHP_EOL;
