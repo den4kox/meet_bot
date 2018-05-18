@@ -18,7 +18,7 @@ Route::get('/home', function () {
     return view('welcome');
 });
 
-Route::post('telegram/handler/{salt}/', 'MainController@handler'); //->middleware(CheckLastUpdate::class);
+Route::post('telegram/handler/{salt}/', 'MainController@handler')->middleware(CheckLastUpdate::class);
 
 Route::post('/setGeneralTable', 'MainController@setGeneralTable');
 
