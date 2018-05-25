@@ -31,8 +31,8 @@ class MainController extends Controller
         $params = $request->all();
         // $this->utils->setGeneralTable('last-update-id', $params['update_id']);
         //$this->utils->setGeneralTable('last-message-id', $params['message']['message_id']);
-        $allJson = json_encode($params);
-        $this->telegram->sendMessage('150401573', $allJson, 'HTML');
+        // $allJson = json_encode($params);
+        // $this->telegram->sendMessage('150401573', $allJson, 'HTML');
 
         if(@$params['inline_query']) {
             $res = $this->telegram->inlineQuery($params);
