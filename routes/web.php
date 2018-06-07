@@ -14,8 +14,8 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use App\Http\Middleware\CheckLastUpdate;
 
-Route::get('/home', function () {
-    return view('welcome');
+Route::get('/generator', function () {
+    return view('build.generator');
 });
 
 Route::post('telegram/handler/{salt}/', 'MainController@handler')->middleware(CheckLastUpdate::class);
