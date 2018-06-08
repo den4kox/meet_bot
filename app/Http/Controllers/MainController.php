@@ -8,6 +8,8 @@ use GuzzleHttp\Client;
 use App\Services\TelegramService;
 use App\Utils\TelegramUtils;
 use App\General;
+use Telegram\Bot\Api;
+
 // https://api.telegram.org/bot528975393:AAGixyvKXmLFEDBcEBjeqXL3-WxPYq41RvQ/setWebhook
 class MainController extends Controller
 {
@@ -15,6 +17,7 @@ class MainController extends Controller
     {
         $this->telegram = new TelegramService();
         $this->utils = new TelegramUtils();
+        $this->nt = $telegram = new Api();
     }
 
     public function setHook(Request $request) {
@@ -27,7 +30,18 @@ class MainController extends Controller
     }
 
     public function airbrake(Request $request) {
-        
+        $params = $request->all();
+        $allJson = json_encode($params);
+        $response = $this->nt->getMe();
+
+        $botId = $response->getId();
+        $firstName = $response->getFirstName();
+        $username = $response->getUsername();
+
+        $this->nt->sendMessage([
+            'chat_id' => '150401573', 
+            'text' => $allJson
+          ]);
     }
 
 
