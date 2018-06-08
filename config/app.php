@@ -162,6 +162,7 @@ return [
 
         // telegram
         // App\Providers\TelegramServicesProvider::class
+        Telegram\Bot\Laravel\TelegramServiceProvider::class,
 
     ],
 
@@ -213,6 +214,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         // 'TelegramService' => App\Services\TelegramService::class
+        'Telegram'  => Telegram\Bot\Laravel\Facades\Telegram::class,
 
     ],
 

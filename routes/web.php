@@ -20,6 +20,8 @@ Route::get('/generator', function () {
 
 Route::post('telegram/handler/{salt}/', 'MainController@handler')->middleware(CheckLastUpdate::class);
 
+Route::post('airbrake/handler', 'MainController@airbrake');
+
 Route::post('/setGeneralTable', 'MainController@setGeneralTable');
 
 Route::post('setHook', 'MainController@setHook');

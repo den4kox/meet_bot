@@ -26,6 +26,10 @@ class MainController extends Controller
         return $this->utils->setGeneralTable($request->label, $request->value);
     }
 
+    public function airbrake(Request $request) {
+        
+    }
+
 
     public function handler(Request $request, $salt) {
         $params = $request->all();
