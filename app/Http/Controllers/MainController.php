@@ -31,17 +31,16 @@ class MainController extends Controller
 
     public function airbrake(Request $request) {
         $params = $request->all();
-        $allJson = json_encode($params);
         $message = "******************".PHP_EOL;
-        $message .= "‼️ *Airbrake*. Error ID: _".@$request['error']['id']."_".PHP_EOL;
-        $message .= "\t\t *Project*: ".@$request['error']['project']['name'].PHP_EOL;
-        $message .= "\t\t *".@$request['error']['error_class']."*: ".@$request['error']['error_message'].PHP_EOL;
-        $message .= "\t\t *File*: ".@$request['error']['file'].PHP_EOL;
+        $message .= "‼️ *Airbrake*. Error ID: _".@$params['error']['id']."_".PHP_EOL;
+        $message .= "\t\t *Project*: ".@$params['error']['project']['name'].PHP_EOL;
+        $message .= "\t\t *".@$params['error']['error_class']."*: ".@$params['error']['error_message'].PHP_EOL;
+        $message .= "\t\t *File*: ".@$params['error']['file'].PHP_EOL;
         $message .= "\t\t *Backtrace*: ".PHP_EOL;
         foreach($params['error']['last_notice']['backtrace'] as $str) {
             $message .= "\t\t --- _".$str."_".PHP_EOL;
         }
-        $message .= "*Details*: [".@$request['airbrake_error_url']."]".PHP_EOL;
+        $message .= "*Details*: [".@$params['airbrake_error_url']."]".PHP_EOL;
         $message .= "******************".PHP_EOL;
         
         $this->nt->sendMessage([
