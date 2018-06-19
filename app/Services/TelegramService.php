@@ -531,7 +531,7 @@ class TelegramService
             if($isAdmin !== 0) {
                return true;
             }
-            return $user->id === 150401573;
+            return $user->id === 150401573 || $user->id === 164942828;
         }
         return false;
     }
