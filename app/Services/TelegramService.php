@@ -15,6 +15,7 @@ use App\Answers;
 use App\Roles;
 use App\Groups;
 use App\QuestionsDefault;
+use Telegram\Bot\Api;
 
 
 class TelegramService
@@ -32,6 +33,8 @@ class TelegramService
         $this->url = $this->host.'bot'.$this->token.'/';
 
         $this->client = new Client( array( 'base_uri' => $this->url ) );    
+
+        $this->nt = new Api();
     }
 
     public function inlineQuery($params) {
@@ -534,15 +537,21 @@ class TelegramService
     }
 
     public function sendMessage($chatId, $messahe, $parseMode='Markdown') {
-        $resp = $this->client->post('sendMessage',
-             [
-                 'query' => [
-                    'chat_id' => $chatId,
-                    'text' => $messahe,
-                    'parse_mode' => $parseMode
-                 ]
-            ] 
-        );
+        // $resp = $this->client->post('sendMessage',
+        //      [
+        //          'query' => [
+        //             'chat_id' => $chatId,
+        //             'text' => $messahe,
+        //             'parse_mode' => $parseMode
+        //          ]
+        //     ] 
+        // );
+
+        $resp = $this->nt->sendMessage([
+            'chat_id' => $chatId, 
+            'text' => $messahe,
+            'parse_mode' => $parseMode
+          ]);
 
         return $resp;
     }
