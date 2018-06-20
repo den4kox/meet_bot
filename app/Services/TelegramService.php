@@ -429,7 +429,6 @@ class TelegramService
             $group = Groups::find($data['chat']['id']);
             $users = $group->users()->where('status', 1)->get();
             $questions = Questions::where('group_id', $group->id)->pluck('id')->toArray();
-            print_r($questions);
             foreach($users as $user) {
                 $arrayActions = [];
                 $countActive = $user->actions()->where('status', 1)->count();
