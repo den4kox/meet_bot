@@ -145,6 +145,9 @@ class TelegramService
         }
 
         $group = Groups::find($chatId);
+        if(!$group) {
+            return '';
+        }
         $start = Carbon::parse('last monday')->startOfDay();
         $stop = Carbon::parse('next friday')->endOfDay();
         $events = $group->events()->whereBetween('created_at', [
@@ -187,6 +190,9 @@ class TelegramService
 
     public function getActiveUsers($data) {
         $group = Groups::find($data['chat']['id']);
+        if(!$group) {
+            return '';
+        }
         $users = $group->users()->where('status', 1)->get();
         $message = "Список участников миттинга:".PHP_EOL;
         $message .= "-------------".PHP_EOL;
@@ -232,6 +238,9 @@ class TelegramService
     }
 
     public function getUserAnswerMessage(Users $user, Events $event) {
+        if(!$event) {
+            return '';
+        }
         $answers = $event->answers()->where('user_id', $user->id)->with('question')->get()->toArray();
         $userLink = $this->getLink($user);
         $message = "\t\t".$userLink.PHP_EOL;
@@ -463,6 +472,9 @@ class TelegramService
         $user = Users::find($userId);
 
         $action = $user->actions()->where('status', 1)->first();
+        if(empty($action)) {
+            return '';
+        }
         $question = Questions::find($action->question_id);
         $event = Events::find($action->event_id);
         $group = $event->group;
