@@ -163,6 +163,7 @@ return [
         // telegram
         // App\Providers\TelegramServicesProvider::class
         Telegram\Bot\Laravel\TelegramServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 
@@ -215,6 +216,7 @@ return [
 
         // 'TelegramService' => App\Services\TelegramService::class
         'Telegram'  => Telegram\Bot\Laravel\Facades\Telegram::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 

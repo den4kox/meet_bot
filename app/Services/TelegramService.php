@@ -145,7 +145,7 @@ class TelegramService
         }
 
         $group = Groups::find($chatId);
-        if(!$group) {
+        if(empty($group)) {
             return '';
         }
         $start = Carbon::parse('last monday')->startOfDay();
